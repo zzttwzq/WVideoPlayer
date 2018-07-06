@@ -1,0 +1,11 @@
+use_frameworks!
+
+target 'WVideoPlayer_Example' do
+  pod 'WVideoPlayer', :path => '../'
+
+  target 'WVideoPlayer_Tests' do
+    inherit! :search_paths
+
+    pod 'FBSnapshotTestCase'
+  end
+end
