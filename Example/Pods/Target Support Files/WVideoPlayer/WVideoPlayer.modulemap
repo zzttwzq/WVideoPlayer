@@ -1,0 +1,6 @@
+framework module WVideoPlayer {
+  umbrella header "WVideoPlayer-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,27 @@
+PODS:
+  - FBSnapshotTestCase (2.1.4):
+    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
+  - FBSnapshotTestCase/Core (2.1.4)
+  - FBSnapshotTestCase/SwiftSupport (2.1.4):
+    - FBSnapshotTestCase/Core
+  - WVideoPlayer (0.1.0)
+
+DEPENDENCIES:
+  - FBSnapshotTestCase
+  - WVideoPlayer (from `../`)
+
+SPEC REPOS:
+  https://github.com/CocoaPods/Specs.git:
+    - FBSnapshotTestCase
+
+EXTERNAL SOURCES:
+  WVideoPlayer:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
+  WVideoPlayer: 95b0111a2078d3d853ae48e1b1b4c6a84dbd627d
+
+PODFILE CHECKSUM: 498590227a90941bc73d63706500b29de4a10889
+
+COCOAPODS: 1.5.0
