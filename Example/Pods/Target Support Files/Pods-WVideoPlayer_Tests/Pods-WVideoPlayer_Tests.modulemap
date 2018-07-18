@@ -1,6 +1,0 @@
-framework module Pods_WVideoPlayer_Tests {
-  umbrella header "Pods-WVideoPlayer_Tests-umbrella.h"
-
-  export *
-  module * { export * }
-}

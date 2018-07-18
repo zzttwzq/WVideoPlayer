@@ -1,27 +1,45 @@
 PODS:
-  - FBSnapshotTestCase (2.1.4):
-    - FBSnapshotTestCase/SwiftSupport (= 2.1.4)
-  - FBSnapshotTestCase/Core (2.1.4)
-  - FBSnapshotTestCase/SwiftSupport (2.1.4):
-    - FBSnapshotTestCase/Core
-  - WVideoPlayer (0.1.0)
+  - AFNetworking (3.2.1):
+    - AFNetworking/NSURLSession (= 3.2.1)
+    - AFNetworking/Reachability (= 3.2.1)
+    - AFNetworking/Security (= 3.2.1)
+    - AFNetworking/Serialization (= 3.2.1)
+    - AFNetworking/UIKit (= 3.2.1)
+  - AFNetworking/NSURLSession (3.2.1):
+    - AFNetworking/Reachability
+    - AFNetworking/Security
+    - AFNetworking/Serialization
+  - AFNetworking/Reachability (3.2.1)
+  - AFNetworking/Security (3.2.1)
+  - AFNetworking/Serialization (3.2.1)
+  - AFNetworking/UIKit (3.2.1):
+    - AFNetworking/NSURLSession
+  - WBasicLibrary (0.3.3)
+  - WExpandLibrary (0.1.5):
+    - AFNetworking
+    - WBasicLibrary
+  - WVideoPlayer (0.1.1):
+    - WExpandLibrary
 
 DEPENDENCIES:
-  - FBSnapshotTestCase
   - WVideoPlayer (from `../`)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - FBSnapshotTestCase
+  https://github.com/cocoapods/specs.git:
+    - AFNetworking
+    - WBasicLibrary
+    - WExpandLibrary
 
 EXTERNAL SOURCES:
   WVideoPlayer:
     :path: "../"
 
 SPEC CHECKSUMS:
-  FBSnapshotTestCase: 094f9f314decbabe373b87cc339bea235a63e07a
-  WVideoPlayer: 95b0111a2078d3d853ae48e1b1b4c6a84dbd627d
+  AFNetworking: b6f891fdfaed196b46c7a83cf209e09697b94057
+  WBasicLibrary: 39740442eb289b8132f807bf91d281c7af155e2d
+  WExpandLibrary: d6772b6d1caf5102a0f92c09d591f59f12af053f
+  WVideoPlayer: 48be2045d9be3ccf4920cea78c3d1ad321b76988
 
-PODFILE CHECKSUM: 498590227a90941bc73d63706500b29de4a10889
+PODFILE CHECKSUM: 214d04e7e135bc5ece1aeb0e4ec94749950ced55
 
-COCOAPODS: 1.5.0
+COCOAPODS: 1.5.3

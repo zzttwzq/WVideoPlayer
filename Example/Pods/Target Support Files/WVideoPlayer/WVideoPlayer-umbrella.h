@@ -10,6 +10,10 @@
 #endif
 #endif
 
+#import "WVideoControl.h"
+#import "WVideoPlayControlView.h"
+#import "WVideoPlayer.h"
+#import "WVideoPlayItem.h"
 
 FOUNDATION_EXPORT double WVideoPlayerVersionNumber;
 FOUNDATION_EXPORT const unsigned char WVideoPlayerVersionString[];

@@ -7,14 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4792F7BFC2E18DD0ED185337 /* Pods_WVideoPlayer_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D580505CB3C149AE27A96E70 /* Pods_WVideoPlayer_Tests.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F598195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F596195388D20070C39A /* InfoPlist.strings */; };
 		6003F59A195388D20070C39A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F599195388D20070C39A /* main.m */; };
-		6003F59E195388D20070C39A /* WVideoAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F59D195388D20070C39A /* WVideoAppDelegate.m */; };
-		6003F5A7195388D20070C39A /* WVideoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5A6195388D20070C39A /* WVideoViewController.m */; };
+		6003F59E195388D20070C39A /* WAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F59D195388D20070C39A /* WAppDelegate.m */; };
+		6003F5A7195388D20070C39A /* WViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5A6195388D20070C39A /* WViewController.m */; };
 		6003F5A9195388D20070C39A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5A8195388D20070C39A /* Images.xcassets */; };
 		6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F5AF195388D20070C39A /* XCTest.framework */; };
 		6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
@@ -23,7 +22,7 @@
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
 		71719F9F1E33DC2100824A3D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */; };
 		873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 873B8AEA1B1F5CCA007FD442 /* Main.storyboard */; };
-		C798A1EBEAF6745311B11F22 /* Pods_WVideoPlayer_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 065504EC2AE4775E05CC7FCC /* Pods_WVideoPlayer_Example.framework */; };
+		FBB6471717A25ECA80A0ADE8 /* Pods_WVideoPlayer_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4463B686FF76B752CB400214 /* Pods_WVideoPlayer_Example.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,11 +36,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		065504EC2AE4775E05CC7FCC /* Pods_WVideoPlayer_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WVideoPlayer_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2592529164D0F1AF84879075 /* Pods-WVideoPlayer_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WVideoPlayer_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		35AC32DE3D5D3F899896B745 /* Pods-WVideoPlayer_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WVideoPlayer_Tests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WVideoPlayer_Tests/Pods-WVideoPlayer_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		3F96EEA65BE8B69120C96A6F /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		59F699EA7F7F34AD625EDDB6 /* WVideoPlayer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = WVideoPlayer.podspec; path = ../WVideoPlayer.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		16B75F972A7A9C92F7412DA5 /* WVideoPlayer.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = WVideoPlayer.podspec; path = ../WVideoPlayer.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		22B631A2B53B1C3D545B3F59 /* Pods-WVideoPlayer_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WVideoPlayer_Example.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example.debug.xcconfig"; sourceTree = "<group>"; };
+		288CB3F86545C2D17A7CF020 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
+		4463B686FF76B752CB400214 /* Pods_WVideoPlayer_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WVideoPlayer_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58A195388D20070C39A /* WVideoPlayer_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WVideoPlayer_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -50,10 +48,10 @@
 		6003F597195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F599195388D20070C39A /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6003F59B195388D20070C39A /* WVideoPlayer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WVideoPlayer-Prefix.pch"; sourceTree = "<group>"; };
-		6003F59C195388D20070C39A /* WVideoAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WVideoAppDelegate.h; sourceTree = "<group>"; };
-		6003F59D195388D20070C39A /* WVideoAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WVideoAppDelegate.m; sourceTree = "<group>"; };
-		6003F5A5195388D20070C39A /* WVideoViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WVideoViewController.h; sourceTree = "<group>"; };
-		6003F5A6195388D20070C39A /* WVideoViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WVideoViewController.m; sourceTree = "<group>"; };
+		6003F59C195388D20070C39A /* WAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WAppDelegate.h; sourceTree = "<group>"; };
+		6003F59D195388D20070C39A /* WAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WAppDelegate.m; sourceTree = "<group>"; };
+		6003F5A5195388D20070C39A /* WViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WViewController.h; sourceTree = "<group>"; };
+		6003F5A6195388D20070C39A /* WViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WViewController.m; sourceTree = "<group>"; };
 		6003F5A8195388D20070C39A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		6003F5AE195388D20070C39A /* WVideoPlayer_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WVideoPlayer_Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F5AF195388D20070C39A /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -61,12 +59,11 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
-		700AB24F6AF152C23882EE87 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		71719F9E1E33DC2100824A3D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		873B8AEA1B1F5CCA007FD442 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		D580505CB3C149AE27A96E70 /* Pods_WVideoPlayer_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WVideoPlayer_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D7DA2157FAC0EB7E448F3EE7 /* Pods-WVideoPlayer_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WVideoPlayer_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example.release.xcconfig"; sourceTree = "<group>"; };
-		FFB8E65A473C566CA885F3B3 /* Pods-WVideoPlayer_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WVideoPlayer_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WVideoPlayer_Tests/Pods-WVideoPlayer_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		B502762988E02FCDF85F64A8 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
+		B71940DBA809F9598910FFD4 /* Pods_WVideoPlayer_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WVideoPlayer_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F2AA5B8397B96D8FBA374526 /* Pods-WVideoPlayer_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WVideoPlayer_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,7 +74,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				C798A1EBEAF6745311B11F22 /* Pods_WVideoPlayer_Example.framework in Frameworks */,
+				FBB6471717A25ECA80A0ADE8 /* Pods_WVideoPlayer_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -88,13 +85,21 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				4792F7BFC2E18DD0ED185337 /* Pods_WVideoPlayer_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		18CDEA8637CDC1807546E07E /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				22B631A2B53B1C3D545B3F59 /* Pods-WVideoPlayer_Example.debug.xcconfig */,
+				F2AA5B8397B96D8FBA374526 /* Pods-WVideoPlayer_Example.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
@@ -103,7 +108,7 @@
 				6003F5B5195388D20070C39A /* Tests */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
-				96F3A37335D863A7B7DF63BA /* Pods */,
+				18CDEA8637CDC1807546E07E /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -123,8 +128,8 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				065504EC2AE4775E05CC7FCC /* Pods_WVideoPlayer_Example.framework */,
-				D580505CB3C149AE27A96E70 /* Pods_WVideoPlayer_Tests.framework */,
+				4463B686FF76B752CB400214 /* Pods_WVideoPlayer_Example.framework */,
+				B71940DBA809F9598910FFD4 /* Pods_WVideoPlayer_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -132,11 +137,11 @@
 		6003F593195388D20070C39A /* Example for WVideoPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				6003F59C195388D20070C39A /* WVideoAppDelegate.h */,
-				6003F59D195388D20070C39A /* WVideoAppDelegate.m */,
+				6003F59C195388D20070C39A /* WAppDelegate.h */,
+				6003F59D195388D20070C39A /* WAppDelegate.m */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
-				6003F5A5195388D20070C39A /* WVideoViewController.h */,
-				6003F5A6195388D20070C39A /* WVideoViewController.m */,
+				6003F5A5195388D20070C39A /* WViewController.h */,
+				6003F5A6195388D20070C39A /* WViewController.m */,
 				71719F9D1E33DC2100824A3D /* LaunchScreen.storyboard */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
@@ -178,22 +183,11 @@
 		60FF7A9C1954A5C5007DD14C /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				59F699EA7F7F34AD625EDDB6 /* WVideoPlayer.podspec */,
-				3F96EEA65BE8B69120C96A6F /* README.md */,
-				700AB24F6AF152C23882EE87 /* LICENSE */,
+				16B75F972A7A9C92F7412DA5 /* WVideoPlayer.podspec */,
+				B502762988E02FCDF85F64A8 /* README.md */,
+				288CB3F86545C2D17A7CF020 /* LICENSE */,
 			);
 			name = "Podspec Metadata";
-			sourceTree = "<group>";
-		};
-		96F3A37335D863A7B7DF63BA /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				2592529164D0F1AF84879075 /* Pods-WVideoPlayer_Example.debug.xcconfig */,
-				D7DA2157FAC0EB7E448F3EE7 /* Pods-WVideoPlayer_Example.release.xcconfig */,
-				FFB8E65A473C566CA885F3B3 /* Pods-WVideoPlayer_Tests.debug.xcconfig */,
-				35AC32DE3D5D3F899896B745 /* Pods-WVideoPlayer_Tests.release.xcconfig */,
-			);
-			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -203,11 +197,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5BF195388D20070C39A /* Build configuration list for PBXNativeTarget "WVideoPlayer_Example" */;
 			buildPhases = (
-				1280E0EE48A9648ED08E38BD /* [CP] Check Pods Manifest.lock */,
+				640A8C5951A5504C1180366F /* [CP] Check Pods Manifest.lock */,
 				6003F586195388D20070C39A /* Sources */,
 				6003F587195388D20070C39A /* Frameworks */,
 				6003F588195388D20070C39A /* Resources */,
-				4FD521B4B0B51773E18C38FD /* [CP] Embed Pods Frameworks */,
+				110E8D2AC7335B6EE86218E3 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -222,11 +216,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6003F5C2195388D20070C39A /* Build configuration list for PBXNativeTarget "WVideoPlayer_Tests" */;
 			buildPhases = (
-				3C4F0FE0DF8283E77DBABC15 /* [CP] Check Pods Manifest.lock */,
 				6003F5AA195388D20070C39A /* Sources */,
 				6003F5AB195388D20070C39A /* Frameworks */,
 				6003F5AC195388D20070C39A /* Resources */,
-				06F41C8977996BF4EAFD99F4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -244,7 +236,7 @@
 		6003F582195388D10070C39A /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = WVideo;
+				CLASSPREFIX = W;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = zzttwzq;
 				TargetAttributes = {
@@ -295,25 +287,31 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		06F41C8977996BF4EAFD99F4 /* [CP] Embed Pods Frameworks */ = {
+		110E8D2AC7335B6EE86218E3 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-WVideoPlayer_Tests/Pods-WVideoPlayer_Tests-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/FBSnapshotTestCase/FBSnapshotTestCase.framework",
+				"${SRCROOT}/Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/AFNetworking/AFNetworking.framework",
+				"${BUILT_PRODUCTS_DIR}/WBasicLibrary/WBasicLibrary.framework",
+				"${BUILT_PRODUCTS_DIR}/WExpandLibrary/WExpandLibrary.framework",
+				"${BUILT_PRODUCTS_DIR}/WVideoPlayer/WVideoPlayer.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBSnapshotTestCase.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AFNetworking.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WBasicLibrary.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WExpandLibrary.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WVideoPlayer.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WVideoPlayer_Tests/Pods-WVideoPlayer_Tests-frameworks.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		1280E0EE48A9648ED08E38BD /* [CP] Check Pods Manifest.lock */ = {
+		640A8C5951A5504C1180366F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -331,42 +329,6 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		3C4F0FE0DF8283E77DBABC15 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-WVideoPlayer_Tests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		4FD521B4B0B51773E18C38FD /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/WVideoPlayer/WVideoPlayer.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WVideoPlayer.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -374,8 +336,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6003F59E195388D20070C39A /* WVideoAppDelegate.m in Sources */,
-				6003F5A7195388D20070C39A /* WVideoViewController.m in Sources */,
+				6003F59E195388D20070C39A /* WAppDelegate.m in Sources */,
+				6003F5A7195388D20070C39A /* WViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -501,7 +463,7 @@
 		};
 		6003F5C0195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2592529164D0F1AF84879075 /* Pods-WVideoPlayer_Example.debug.xcconfig */;
+			baseConfigurationReference = 22B631A2B53B1C3D545B3F59 /* Pods-WVideoPlayer_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -516,7 +478,7 @@
 		};
 		6003F5C1195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D7DA2157FAC0EB7E448F3EE7 /* Pods-WVideoPlayer_Example.release.xcconfig */;
+			baseConfigurationReference = F2AA5B8397B96D8FBA374526 /* Pods-WVideoPlayer_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -531,7 +493,6 @@
 		};
 		6003F5C3195388D20070C39A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FFB8E65A473C566CA885F3B3 /* Pods-WVideoPlayer_Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -555,7 +516,6 @@
 		};
 		6003F5C4195388D20070C39A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 35AC32DE3D5D3F899896B745 /* Pods-WVideoPlayer_Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				FRAMEWORK_SEARCH_PATHS = (
