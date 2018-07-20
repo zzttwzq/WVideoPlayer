@@ -13,21 +13,15 @@
  */
 @property (nonatomic,assign) CGRect originRect;
 
-
 /**
- 要显示的view (nil 则是显示在window上)
- */
-@property (nonatomic,strong) UIView *showInView;
-
-
-/**
- 播放控制器
+ 播放控制界面
  */
 @property (nonatomic,strong) WVideoPlayControlView *controlView;
 
-@property (nonatomic,assign) WPlayState *playState;
-
-@property (nonatomic,assign) WPlayViewState *viewState;
+/**
+ 播放管理
+ */
+@property (nonatomic,strong) WVideoManager *videoManager;
 
 @end
 
@@ -53,35 +47,199 @@ static WVideoPlayer *sharedInstance;
 }
 
 
+/**
+ 获取实例化的对象
+
+ @param frame 尺寸
+ @return 返回实例化的对象
+ */
+- (instancetype) initWithFrame:(CGRect)frame
+{
+    self = [super initWithFrame:frame];
+    if (self) {
+
+        [self createView];
+        self.frame = frame;
+    }
+    return self;
+}
+
+
+/**
+ 获取实例化的对象
+
+ @return 返回实例化的对象
+ */
 - (instancetype) init
 {
     self = [super init];
     if (self) {
 
-        self.backgroundColor = [UIColor blackColor];
-        self.layer.masksToBounds = YES;
-
-
-        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrHideControlBar)];
-        tap.cancelsTouchesInView = YES;
-        [self addGestureRecognizer:tap];
-
-
-        //-------------------------------监听屏幕方向-------------------------------
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(handleDeviceOrientationDidChange:)
-                                                     name:UIDeviceOrientationDidChangeNotification
-                                                   object:nil];
+        [self createView];
     }
-
     return self;
+}
+
+
+- (void) createView
+{
+    self.backgroundColor = [UIColor blackColor];
+    self.layer.masksToBounds = YES;
+
+    typeof(WVideoPlayer *)weakSelf = self;
+
+    //-------------------------------打开隐藏控制视图-------------------------------
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrHideControlBar)];
+    [self addGestureRecognizer:tap];
+
+    //-------------------------------监听屏幕方向-------------------------------
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(handleDeviceOrientationDidChange:)
+                                                 name:UIDeviceOrientationDidChangeNotification
+                                               object:nil];
+
+    
+    //-------------------------------创建播放控制视图-------------------------------
+    self.controlView = [[WVideoPlayControlView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    self.controlView.playStateChanged = ^(WPlayState state) {
+
+        weakSelf.videoManager.playState = state;
+    };
+    self.controlView.playTimeChanged = ^(NSTimeInterval playTime) {
+
+        [weakSelf.videoManager playWithTimeInterval:playTime];
+    };
+    self.controlView.slideChanged = ^(BOOL state) {
+
+        if (state) {
+            weakSelf.videoManager.playState = WPlayState_Paused;
+        }
+
+        weakSelf.videoManager.isSliding = state;
+    };
+    self.controlView.viewChanged = ^(WPlayViewState state) {
+
+        //旋转界面
+        if (state == WPlayViewState_FullScreen) {
+            [weakSelf rotateView:UIDeviceOrientationLandscapeLeft];
+        }
+        else{
+            [weakSelf rotateView:UIDeviceOrientationPortrait];
+        }
+
+        //传递视图状态的改变
+        if ([weakSelf respondsToSelector:@selector(playerPlayStateChange:player:)]){
+            [weakSelf.delegate playerViewStateChange:state player:weakSelf];
+        }
+    };
+    self.controlView.backBtnClick = ^(BOOL state) {
+
+
+    };
+    [self addSubview:self.controlView];
+
+
+    //-------------------------------创建播放监听者-------------------------------
+    self.videoManager = [[WVideoManager alloc] init];
+    self.videoManager.stateChanged = ^(WPlayState state) {
+
+        weakSelf.controlView.playState = state;
+
+        //传递播放状态的改变
+        if ([weakSelf respondsToSelector:@selector(playerPlayStateChange:player:)]){
+            [weakSelf.delegate playerPlayStateChange:state player:weakSelf];
+        }
+    };
+    self.videoManager.totalTimeChanged = ^(NSString * _Nullable totalTime, float totalSecond) {
+
+        [weakSelf.controlView setTotalTime:totalTime totalInterval:totalSecond];
+    };
+    self.videoManager.scheduleTimeChanged = ^(NSString * _Nullable currentTime, float currentSecond) {
+
+        [weakSelf.controlView updateTime:currentTime currentInterval:currentSecond];
+    };
+    [self.layer addSublayer:self.videoManager.layer];
+
 }
 
 
 - (void) showOrHideControlBar
 {
+    [UIView animateWithDuration:0.3 animations:^{
 
+        if (self.controlView.alpha == 0) {
+            self.controlView.alpha = 1;
+        }else{
+            self.controlView.alpha = 0;
+        }
+    }];
 }
+
+
+#pragma mark - 处理旋转
+- (void) handleDeviceOrientationDidChange:(NSNotification *)notifi
+{
+    UIDevice *device = [UIDevice currentDevice];
+    [self rotateView:device.orientation];
+}
+
+
+-(void)rotateView:(UIDeviceOrientation)orientation
+{
+    [self bringSubviewToFront:self.controlView];
+    
+    if (orientation == UIDeviceOrientationPortrait) {
+
+        //打开系统的状态条
+        //设置WindowLevel与状态栏平级，起到隐藏状态栏的效果
+        [[[UIApplication sharedApplication] keyWindow] setWindowLevel:UIWindowLevelNormal];
+
+        [UIView animateWithDuration:0.3 animations:^{
+
+            //更新并旋转主界面
+            self.transform = CGAffineTransformMakeRotation(0/180.0 * M_PI);
+            self.frame = self.originRect;
+            self.layer.cornerRadius = self.cornerRadius;
+
+            [self.showInView addSubview:self];
+
+            //更新控制视图
+            self.controlView.frame = self.bounds;
+
+            //更新播放图层
+            self.videoManager.layer.frame = self.bounds;
+        }];
+    }
+    else if (orientation == UIDeviceOrientationLandscapeLeft ||
+             orientation == UIDeviceOrientationLandscapeRight) {
+
+        //打开系统的状态条
+        [[[UIApplication sharedApplication] keyWindow] setWindowLevel:UIWindowLevelStatusBar];
+
+        [[UIApplication sharedApplication].keyWindow addSubview:self];
+        [[UIApplication sharedApplication].keyWindow bringSubviewToFront:self];
+
+        [UIView animateWithDuration:0.3 animations:^{
+
+            //更新并旋转主界面
+            if (orientation == UIDeviceOrientationLandscapeLeft) {
+                self.transform = CGAffineTransformMakeRotation(90/180.0 * M_PI);
+            }else{
+                self.transform = CGAffineTransformMakeRotation(270/180.0 * M_PI);
+            }
+            self.frame = CGRectMake(0, 0, ScreenWidth, ScreenHeight);
+            self.layer.cornerRadius = 0;
+            self.center = CGPointMake(ScreenWidth/2, ScreenHeight/2);
+
+            //更新控制视图
+            self.controlView.frame = self.bounds;
+
+            //更新playerview
+            self.videoManager.layer.frame = self.bounds;
+        }];
+    }
+}
+
 
 #pragma mark - 处理播放源
 /**
@@ -91,7 +249,7 @@ static WVideoPlayer *sharedInstance;
  */
 -(void)playWithUrlString:(NSString *)urlString;
 {
-
+    self.videoManager.item = [[WVideoPlayItem alloc] initWithURLString:urlString];
 }
 
 
@@ -102,7 +260,7 @@ static WVideoPlayer *sharedInstance;
  */
 -(void)playWithFile:(NSString *)fileName;
 {
-
+    self.videoManager.item = [[WVideoPlayItem alloc] initWithfileName:fileName];
 }
 
 
@@ -112,7 +270,8 @@ static WVideoPlayer *sharedInstance;
  */
 - (void) play;
 {
-
+    self.controlView.playState = WPlayState_isPlaying;
+    self.videoManager.playState = WPlayState_isPlaying;
 }
 
 
@@ -121,7 +280,8 @@ static WVideoPlayer *sharedInstance;
  */
 - (void) pause;
 {
-
+    self.controlView.playState = WPlayState_Paused;
+    self.videoManager.playState = WPlayState_Paused;
 }
 
 
@@ -130,7 +290,8 @@ static WVideoPlayer *sharedInstance;
  */
 - (void) stop;
 {
-
+    self.controlView.playState = WPlayState_Stoped;
+    self.videoManager.playState = WPlayState_Stoped;
 }
 
 
@@ -141,12 +302,7 @@ static WVideoPlayer *sharedInstance;
     self.originRect = frame;
 
     //处理控制视图
-}
-
-
-- (void) addSubview:(UIView *)view
-{
-    [super addSubview:view];
-    self.showInView = view;
+    self.controlView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+    self.videoManager.layer.frame = self.bounds;
 }
 @end

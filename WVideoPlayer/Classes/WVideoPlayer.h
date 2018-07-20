@@ -5,8 +5,6 @@
 //  Created by 吴志强 on 2018/7/6.
 //
 
-#import <WExpandLibrary/WExpandHeader.h>
-#import <WBasicLibrary/WBasicHeader.h>
 #import "WVideoPlayControlView.h"
 #import "WVideoManager.h"
 
@@ -39,7 +37,13 @@
 
 
 #pragma mark - 播放属性
-@property (nonatomic,assign) int cornerRadio;
+@property (nonatomic,assign) float cornerRadius;
+@property (nonatomic,weak) id<WPlayerProtocol> delegate;
+
+/**
+ 要显示的view (nil 则是显示在window上)
+ */
+@property (nonatomic,strong) UIView *showInView;
 
 
 /**
@@ -48,7 +52,6 @@
  @return 返回实例化的对象
  */
 +(WVideoPlayer *)videoPlayer;
-
 
 #pragma mark - 处理播放源
 /**

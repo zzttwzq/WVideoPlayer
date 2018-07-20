@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "WVideoPlayItem.h"
 
 typedef NS_ENUM(NSInteger,WPlayState) {
     WPlayState_PrepareToPlay,
@@ -20,23 +21,58 @@ typedef NS_ENUM(NSInteger,WPlayState) {
 
 //视频播放状态改变回调
 typedef void(^WPlayStateChanged)(WPlayState state);
+//视频总时间改变回调
+typedef void(^WPlayTotalTimeChanged)(NSString * _Nullable totalTime,float totalSecond);
+//视频定时器改变时间回调
+typedef void(^WPlayScheduleTimeChanged)(NSString * _Nullable currentTime,float currentSecond);
 
 @interface WVideoManager : NSObject
 
-#pragma mark - 处理播放源
 /**
- 播放url地址
-
- @param urlString url地址
+ 播放图层
  */
--(void)playWithUrlString:(NSString *)urlString;
+@property (nonatomic,strong) AVPlayerLayer *layer;
+
 
 
 /**
- 播放本地文件
-
- @param fileName 文件名
+ 设置播放源
  */
--(void)playWithFile:(NSString *)fileName;
+@property (nonatomic,strong) WVideoPlayItem *item;
+
+/**
+ 播放状态
+ */
+@property (nonatomic,assign) WPlayState playState;
+
+/**
+ 进度条正在被拖拽
+ */
+@property (nonatomic,assign) BOOL isSliding;
+
+
+
+/**
+ 播放状态改变
+ */
+@property (nonatomic,copy) WPlayStateChanged stateChanged;
+
+/**
+ 总时间的改变
+ */
+@property (nonatomic,copy) WPlayTotalTimeChanged totalTimeChanged;
+
+/**
+ 更新时间
+ */
+@property (nonatomic,copy) WPlayScheduleTimeChanged scheduleTimeChanged;
+
+
+/**
+ 播放到当前时间
+
+ @param timeinterval  播放时间
+ */
+- (void) playWithTimeInterval:(NSTimeInterval)timeinterval;
 
 @end

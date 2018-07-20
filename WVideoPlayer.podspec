@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'WVideoPlayer'
-  s.version          = '0.1.1'
+  s.version          = '0.1.2'
   s.summary          = 'iOS avplayer 视频框架的一个封装，能够实现在线和本地视频，音频播放，可以修改的播放控制界面。'
 
 # This description is used to generate tags and improve search results.
