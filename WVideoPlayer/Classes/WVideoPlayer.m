@@ -9,11 +9,6 @@
 
 @interface WVideoPlayer ()
 /**
- 原始的rect
- */
-@property (nonatomic,assign) CGRect originRect;
-
-/**
  播放控制界面
  */
 @property (nonatomic,strong) WVideoPlayControlView *controlView;
@@ -22,6 +17,18 @@
  播放管理
  */
 @property (nonatomic,strong) WVideoManager *videoManager;
+
+/**
+ 原始的rect
+ */
+@property (nonatomic,assign) CGRect originRect;
+@property (nonatomic,assign) BOOL keepOriginRect;
+
+/**
+ 要显示的view (nil 则是显示在window上)
+ */
+@property (nonatomic,strong) UIView *showInView;
+@property (nonatomic,assign) BOOL keepOriginView;
 
 @end
 
@@ -60,6 +67,7 @@ static WVideoPlayer *sharedInstance;
 
         [self createView];
         self.frame = frame;
+        self.originRect = frame;
     }
     return self;
 }
@@ -87,10 +95,6 @@ static WVideoPlayer *sharedInstance;
     self.layer.masksToBounds = YES;
 
     typeof(WVideoPlayer *)weakSelf = self;
-
-    //-------------------------------打开隐藏控制视图-------------------------------
-    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrHideControlBar)];
-    [self addGestureRecognizer:tap];
 
     //-------------------------------监听屏幕方向-------------------------------
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -128,13 +132,16 @@ static WVideoPlayer *sharedInstance;
         }
 
         //传递视图状态的改变
-        if ([weakSelf respondsToSelector:@selector(playerPlayStateChange:player:)]){
+        if ([weakSelf.delegate respondsToSelector:@selector(playerPlayStateChange:player:)]){
             [weakSelf.delegate playerViewStateChange:state player:weakSelf];
         }
     };
     self.controlView.backBtnClick = ^(BOOL state) {
 
-
+        //传递返回事件
+        if ([weakSelf.delegate respondsToSelector:@selector(backBtnClick:)]){
+            [weakSelf.delegate backBtnClick:weakSelf];
+        }
     };
     [self addSubview:self.controlView];
 
@@ -146,35 +153,31 @@ static WVideoPlayer *sharedInstance;
         weakSelf.controlView.playState = state;
 
         //传递播放状态的改变
-        if ([weakSelf respondsToSelector:@selector(playerPlayStateChange:player:)]){
+        if ([weakSelf.delegate respondsToSelector:@selector(playerPlayStateChange:player:)]){
             [weakSelf.delegate playerPlayStateChange:state player:weakSelf];
         }
     };
-    self.videoManager.totalTimeChanged = ^(NSString * _Nullable totalTime, float totalSecond) {
+    self.videoManager.totalTimeChanged = ^(NSString * _Nullable totalTime, NSTimeInterval totalSecond) {
 
         [weakSelf.controlView setTotalTime:totalTime totalInterval:totalSecond];
     };
-    self.videoManager.scheduleTimeChanged = ^(NSString * _Nullable currentTime, float currentSecond) {
+    self.videoManager.scheduleTimeChanged = ^(NSString * _Nullable currentTime, NSTimeInterval currentSecond) {
 
         [weakSelf.controlView updateTime:currentTime currentInterval:currentSecond];
+    };
+    self.videoManager.bufferTimeChanged = ^(NSTimeInterval currentSecond) {
+
+        [weakSelf.controlView updateBuffer:currentSecond];
     };
     [self.layer addSublayer:self.videoManager.layer];
 
 }
 
-
-- (void) showOrHideControlBar
+- (void) setShowBackBtn:(BOOL)showBackBtn
 {
-    [UIView animateWithDuration:0.3 animations:^{
-
-        if (self.controlView.alpha == 0) {
-            self.controlView.alpha = 1;
-        }else{
-            self.controlView.alpha = 0;
-        }
-    }];
+    _showBackBtn = showBackBtn;
+    self.controlView.showBackBtn = showBackBtn;
 }
-
 
 #pragma mark - 处理旋转
 - (void) handleDeviceOrientationDidChange:(NSNotification *)notifi
@@ -186,6 +189,7 @@ static WVideoPlayer *sharedInstance;
 
 -(void)rotateView:(UIDeviceOrientation)orientation
 {
+    self.keepOriginRect = YES;
     [self bringSubviewToFront:self.controlView];
     
     if (orientation == UIDeviceOrientationPortrait) {
@@ -212,6 +216,8 @@ static WVideoPlayer *sharedInstance;
     }
     else if (orientation == UIDeviceOrientationLandscapeLeft ||
              orientation == UIDeviceOrientationLandscapeRight) {
+
+        NSLog(@">>>UIDeviceOrientationLandscapeLeft");
 
         //打开系统的状态条
         [[[UIApplication sharedApplication] keyWindow] setWindowLevel:UIWindowLevelStatusBar];
@@ -299,10 +305,24 @@ static WVideoPlayer *sharedInstance;
 - (void) setFrame:(CGRect)frame
 {
     [super setFrame:frame];
-    self.originRect = frame;
+
+    if (!_keepOriginRect){
+        self.originRect = frame;
+    }
+    self.keepOriginRect = NO;
 
     //处理控制视图
     self.controlView.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
     self.videoManager.layer.frame = self.bounds;
+}
+
+- (void) addSubview:(UIView *)view
+{
+    [super addSubview:view];
+
+    if (!_keepOriginView){
+        self.showInView = view;
+    }
+    self.keepOriginView = NO;
 }
 @end

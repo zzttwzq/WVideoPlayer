@@ -7,6 +7,8 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import <WBasicLibrary/WBasicHeader.h>
+#import <WExpandLibrary/WExpandHeader.h>
 
 #define ScreenWidth [UIScreen mainScreen].bounds.size.width
 #define ScreenHeight [UIScreen mainScreen].bounds.size.height

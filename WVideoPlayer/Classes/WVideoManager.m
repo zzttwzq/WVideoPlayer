@@ -75,11 +75,11 @@
 
     [self.player seekToTime:startTime completionHandler:^(BOOL finished) {
 
-        if (self.playState == WPlayState_isPlaying) {
+        if (!self.isSliding) {
 
-            if (!self.isSliding) {
-
-                self.playState = WPlayState_isPlaying;
+            self.playState = WPlayState_isPlaying;
+            if (self.stateChanged) {
+                self.stateChanged(self.playState);
             }
         }
     }];
@@ -136,7 +136,6 @@
 {
     typeof(WVideoManager *)weakSelf = self;
 
-
     _item = item;
     _item.itemStatusCallBack = ^(id objc) {
 
@@ -179,7 +178,34 @@
             }
             [WVideoPlayItem showDebugMessage:@"播放状态未知"];
         }
+
+        //获取播放参数
+        weakSelf.duration = CMTimeGetSeconds(weakSelf.item.playerItem.asset.duration);
+        NSArray *videoArray = [weakSelf.item.playerItem.asset tracksWithMediaType:AVMediaTypeVideo];
+        if (videoArray.count > 0) {
+
+            weakSelf.fps = [[videoArray objectAtIndex:0] nominalFrameRate];
+        }
     };
+    _item.playBufferCallBack = ^(id objc) {
+
+        AVPlayerItem *playerItem = (AVPlayerItem *)objc;
+
+        NSArray *array = playerItem.loadedTimeRanges;
+        CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓冲时间范围
+        float startSeconds = CMTimeGetSeconds(timeRange.start);
+        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
+        NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
+
+        if (weakSelf.bufferTimeChanged) {
+            weakSelf.bufferTimeChanged(totalBuffer);
+        }
+    };
+
+    //放置播放源
+    [self.player replaceCurrentItemWithPlayerItem:_item.playerItem];
+
+    self.playState = WPlayState_isPlaying;
 }
 
 

@@ -20,6 +20,8 @@
 @property (nonatomic,strong) UIImageView *fullScreen;
 @property (nonatomic,strong) UIView *fullScreenTapView;
 @property (nonatomic,strong) UISlider *currentProgress;
+@property (nonatomic,strong) UIProgressView *currentProgress2;
+@property (nonatomic,strong) UIProgressView *bufferProgress;
 @property (nonatomic,strong) UILabel *valueLab;
 @property (nonatomic,strong) UIImageView *backImage;
 
@@ -31,6 +33,11 @@
 
 @property (nonatomic,assign) BOOL keepOriginRect;
 @property (nonatomic,assign) CGRect originRect;
+@property (nonatomic,assign) NSTimeInterval totalInterVals;
+
+@property (nonatomic,strong) UIView *backView;
+
+@property (nonatomic,assign) BOOL isSliding;
 
 @end
 
@@ -49,16 +56,22 @@
         self.opaque = YES;
         self.backgroundColor = [UIColor colorWithRed:0 green:0 blue:0 alpha:0.3];
 
+        //所有控件的父视图
+        _backView = [[UIView alloc] initWithFrame:self.bounds];
+        [self addSubview:_backView];
+        UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showOrHideControlBar)];
+        [self addGestureRecognizer:tap];
+
         //-------------------------------touchview-------------------------------
         _lightControlView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width/2, self.height)];
         _lightControlView.alpha = 0;
         [_lightControlView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(lightControlTouch:)]];
-        [self addSubview:_lightControlView];
+        [_backView addSubview:_lightControlView];
 
         _volumeControlView = [[UIView alloc] initWithFrame:CGRectMake(self.width/2, 0, self.width/2, self.height)];
         _volumeControlView.alpha = 0;
         [_volumeControlView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(volumeControlTouch:)]];
-        [self addSubview:_volumeControlView];
+        [_backView addSubview:_volumeControlView];
 
         
         //=======返回按钮
@@ -66,14 +79,14 @@
         _backImage.image = [UIImage imageNamed:@"left_back_icon_white_60x60"];
         _backImage.userInteractionEnabled = YES;
         [_backImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back)]];
-        [self addSubview:_backImage];
+        [_backView addSubview:_backImage];
 
         _title = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, ScreenWidth, 30)];
         _title.font = [UIFont systemFontOfSize:18];
         _title.textColor = [UIColor whiteColor];
         _title.textAlignment = NSTextAlignmentCenter;
         _title.alpha = 0;
-        [self addSubview:_title];
+        [_backView addSubview:_title];
 
         //-------------------------------播放控制器区-------------------------------
         int playImgHeight = 50;
@@ -83,7 +96,7 @@
         _playIMG.image = [UIImage imageNamed:@"btn_video_play_90x90"];
         _playIMG.userInteractionEnabled = YES;
         [_playIMG addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(play)]];
-        [self addSubview:_playIMG];
+        [_backView addSubview:_playIMG];
 
 
         _retryBtn = [[UIImageView alloc] initWithFrame:CGRectMake((self.width-60)/2, (self.height-30)/2, 60, 30)];
@@ -91,7 +104,7 @@
         _retryBtn.userInteractionEnabled = YES;
         _retryBtn.alpha = 0;
         [_retryBtn addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(retry)]];
-        [self addSubview:_retryBtn];
+        [_backView addSubview:_retryBtn];
 
 
         _valueLab = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 30)];
@@ -99,7 +112,7 @@
         _valueLab.textColor = [UIColor whiteColor];
         _valueLab.textAlignment = NSTextAlignmentCenter;
         _valueLab.alpha = 0;
-        [self addSubview:_valueLab];
+        [_backView addSubview:_valueLab];
 
 
         //=======全屏按钮
@@ -108,19 +121,19 @@
         _currentTime.textColor = [UIColor whiteColor];
         _currentTime.text = @"00:00";
         _currentTime.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:_currentTime];
+        [_backView addSubview:_currentTime];
 
 
         //=======全屏按钮
         _fullScreen = [[UIImageView alloc] initWithFrame:CGRectMake(self.width-25, (AVPLAYER_BAR_HEIGHT-15)/2+_currentTime.top, 15, 15)];
         _fullScreen.image = [UIImage imageNamed:@"video_amplification"];
-        [self addSubview:_fullScreen];
+        [_backView addSubview:_fullScreen];
 
 
         //=======全屏按钮
         _fullScreenTapView = [[UIView alloc] initWithFrame:CGRectMake(ScreenWidth-50, self.height-50, 50, 50)];
         [_fullScreenTapView addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(showFullScreen)]];
-        [self addSubview:_fullScreenTapView];
+        [_backView addSubview:_fullScreenTapView];
 
 
         //=======总的时间
@@ -129,16 +142,33 @@
         _totalTime.textColor = [UIColor whiteColor];
         _totalTime.text = @"00:00";
         _totalTime.textAlignment = NSTextAlignmentCenter;
-        [self addSubview:_totalTime];
+        [_backView addSubview:_totalTime];
 
 
         //=======当前播放进度条
+//        _bufferProgress = [[UIProgressView alloc] initWithFrame:CGRectMake(_currentTime.right+5, _currentTime.top, self.width-_currentTime.width-_totalTime.width-_fullScreen.width-20-15, _currentTime.height)];
+//        _bufferProgress.center = _currentProgress.center;
+//        _bufferProgress.tintColor = [UIColor whiteColor];
+//        [_backView addSubview:_bufferProgress];
+
         _currentProgress = [[UISlider alloc] initWithFrame:CGRectMake(_currentTime.right+5, _currentTime.top, self.width-_currentTime.width-_totalTime.width-_fullScreen.width-20-15, _currentTime.height)];
         _currentProgress.minimumValue = 0;
         _currentProgress.value = 0;
         _currentProgress.tintColor = [UIColor whiteColor];
+//        [_currentProgress setMaximumTrackTintColor:[UIColor redColor]];
+//        [_currentProgress setMinimumTrackTintColor:[UIColor redColor]];
+//        [_currentProgress settra];
+
         [_currentProgress setThumbImage:[UIImage imageNamed:@"椭圆-1"] forState:UIControlStateNormal];
         [_currentProgress setThumbImage:[UIImage imageNamed:@"椭圆-1"] forState:UIControlStateHighlighted];
+        [_backView addSubview:_currentProgress];
+
+
+
+        _currentProgress2 = [[UIProgressView alloc] initWithFrame:CGRectMake(0, self.height-2, self.width, 2)];
+        _currentProgress2.alpha = 0;
+        _currentProgress2.tintColor = [UIColor whiteColor];
+        [self addSubview:_currentProgress2];
 
 
         //=======当前进度条操作事件
@@ -149,7 +179,9 @@
         [_currentProgress addTarget:self action:@selector(progressChanged) forControlEvents:UIControlEventValueChanged];
         [_currentProgress addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
         [_currentProgress addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpOutside];
-        [self addSubview:_currentProgress];
+
+        self.backView.alpha = 0;
+        [self showOrHideControlBar];
     }
     return self;
 }
@@ -166,6 +198,7 @@
 {
     self.totalTime.text = totalTime;
     self.currentProgress.maximumValue = totalInterval;
+    _totalInterVals = totalInterval;
 }
 
 
@@ -180,10 +213,66 @@
 {
     self.currentTime.text = currentTime;
     self.currentProgress.value = currentInterval;
+    self.currentProgress2.progress = currentInterval/_totalInterVals;
+}
+
+
+/**
+ 更新缓冲进度
+
+ @param currentInterval 缓冲进度
+ */
+- (void) updateBuffer:(NSTimeInterval)currentInterval;
+{
+    NSLog(@"%f",currentInterval);
+    self.bufferProgress.progress = currentInterval/_totalInterVals;
 }
 
 
 #pragma mark - 处理点击事件
+- (void) showOrHideControlBar
+{
+    [UIView animateWithDuration:0.3 animations:^{
+
+        if (self.backView.alpha == 0) {
+
+            self.backView.alpha = 1;
+            self.currentProgress2.alpha = 0;
+        }else{
+
+            self.backView.alpha = 0;
+            self.currentProgress2.alpha = 1;
+        }
+    } completion:^(BOOL finished) {
+
+        if (self.backView.alpha == 1) {
+
+            if (!self.isSliding) {
+
+                //如果正在播放就默认倒计时2秒取消
+                [WThreadTool startTimerWithTotalTime:4 countHandler:^(float update) {
+
+                    if (update == 2) {
+
+                        [UIView animateWithDuration:0.3 animations:^{
+
+                            if (self.backView.alpha == 0) {
+
+                                self.backView.alpha = 1;
+                                self.currentProgress2.alpha = 0;
+                            }else{
+
+                                self.backView.alpha = 0;
+                                self.currentProgress2.alpha = 1;
+                            }
+                        }];
+                    }
+                }];
+            }
+        }
+    }];
+}
+
 
 - (void) showFullScreen
 {
@@ -248,8 +337,8 @@
 
 - (void)handleTouchDown:(UITapGestureRecognizer *)sender
 {
-    NSLog(@"TouchDown");
     _tap.enabled = NO;
+    self.isSliding = YES;
 
     if (self.slideChanged) {
         self.slideChanged(YES);
@@ -258,8 +347,8 @@
 
 - (void)handleTouchUp:(UITapGestureRecognizer *)sender
 {
-    NSLog(@"TouchUp");
     _tap.enabled = YES;
+    self.isSliding = NO;
 
     if (self.slideChanged) {
         self.slideChanged(NO);
@@ -329,11 +418,21 @@
     [super setFrame:frame];
 
     if (!_keepOriginRect){
-        self.keepOriginRect = NO;
         self.originRect = frame;
     }
+    self.keepOriginRect = NO;
 
     [self reSetFrames];
+}
+
+
+- (void) setShowBackBtn:(BOOL)showBackBtn
+{
+    _showBackBtn = showBackBtn;
+    if (!_showBackBtn &&
+        self.viewState == WPlayViewState_Normalize) {
+        self.backImage.alpha = 0;
+    }
 }
 
 
@@ -342,12 +441,11 @@
  */
 - (void) reSetFrames
 {
+    _backView.frame = self.bounds;
+
     _lightControlView.frame = CGRectMake(0, 0, self.width/2, self.height);
 
     _volumeControlView.frame = CGRectMake(self.width/2, 0, self.width/2, self.height);
-
-    _fullScreenTapView.frame = CGRectMake(self.width-50, self.height-50, 50, 50);
-    _fullScreenTapView.backgroundColor = [UIColor redColor];
 
     //=======返回按钮
     _backImage.frame = CGRectMake(0, 10, 30, 30);
@@ -370,13 +468,18 @@
     _fullScreen.frame = CGRectMake(self.width-25, (AVPLAYER_BAR_HEIGHT-15)/2+_currentTime.top, 15, 15);
 
     //=======全屏按钮点击区域
-    _fullScreenTapView.frame = CGRectMake(ScreenWidth-50, self.height-50, 50, 50);
+    _fullScreenTapView.frame = CGRectMake(self.width-50, self.height-50, 50, 50);
 
     //=======总的时间
     _totalTime.frame = CGRectMake(_fullScreen.left-45, _currentTime.top, 40, _currentTime.height);
 
     //=======当前播放进度条
     _currentProgress.frame = CGRectMake(_currentTime.right+5, _currentTime.top, self.width-_currentTime.width-_totalTime.width-_fullScreen.width-20-15, _currentTime.height);
+
+    _bufferProgress.frame = _currentProgress.frame;
+    _bufferProgress.center = _currentProgress.center;
+
+    _currentProgress2.frame = CGRectMake(0, self.height-2, self.width, 2);
 }
 
 
@@ -389,8 +492,7 @@
 {
     _playState = playState;
 
-    if (self.playState == WPlayState_Finished ||
-        self.playState == WPlayState_isPlaying) {
+    if (self.playState == WPlayState_isPlaying) {
 
         //播放按钮
         self.playIMG.image = [UIImage imageNamed:@"btn_video_stop_90x90"];
@@ -409,7 +511,8 @@
         //关闭重试按钮
         self.retryBtn.alpha = 0;
     }
-    else if (self.playState == WPlayState_PrepareToPlay ||
+    else if (self.playState == WPlayState_Finished ||
+             self.playState == WPlayState_PrepareToPlay ||
              self.playState == WPlayState_Stoped) {
 
         //播放按钮
@@ -429,28 +532,33 @@
     //已经最小化想全屏
     if (_viewState == WPlayViewState_Normalize) {
 
+        _viewState = WPlayViewState_FullScreen;
+
         //全屏按钮
         _fullScreen.image = [UIImage imageNamed:@"video_amplification"];
         _lightControlView.alpha = 0;
         _volumeControlView.alpha = 0;
+        _backImage.alpha = 1;
 
         self.keepOriginRect = YES;
         self.frame = self.originRect;
-
-        _viewState = WPlayViewState_FullScreen;
     }
     //已经全皮想最小化
     else if (_viewState == WPlayViewState_FullScreen) {
+
+        _viewState = WPlayViewState_Normalize;
 
         //全屏按钮
         _fullScreen.image = [UIImage imageNamed:@"narrow_btn"];
         _lightControlView.alpha = 1;
         _volumeControlView.alpha = 1;
+        if (!_showBackBtn &&
+            self.viewState == WPlayViewState_Normalize) {
+            self.backImage.alpha = 0;
+        }
 
         self.keepOriginRect = YES;
         self.frame = CGRectMake(0, 0, ScreenHeight, ScreenWidth);
-
-        _viewState = WPlayViewState_Normalize;
     }
 }
 @end

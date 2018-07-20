@@ -28,6 +28,7 @@ typedef void(^WPlaySlideChanged)(BOOL state);
 @interface WVideoPlayControlView : UIView
 @property (nonatomic,assign) WPlayState playState;
 @property (nonatomic,assign) WPlayViewState viewState;
+@property (nonatomic,assign) BOOL showBackBtn;
 
 /**
  视频界面改变
@@ -73,4 +74,12 @@ typedef void(^WPlaySlideChanged)(BOOL state);
  */
 - (void) updateTime:(NSString *)currentTime
     currentInterval:(NSTimeInterval)currentInterval;
+
+
+/**
+ 更新缓冲进度
+
+ @param currentInterval 缓冲进度
+ */
+- (void) updateBuffer:(NSTimeInterval)currentInterval;
 @end

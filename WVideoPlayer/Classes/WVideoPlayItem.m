@@ -123,13 +123,6 @@
     }
     else if ([keyPath isEqualToString:@"loadedTimeRanges"]) {
 
-        NSArray *array = _playerItem.loadedTimeRanges;
-        CMTimeRange timeRange = [array.firstObject CMTimeRangeValue];//本次缓冲时间范围
-        float startSeconds = CMTimeGetSeconds(timeRange.start);
-        float durationSeconds = CMTimeGetSeconds(timeRange.duration);
-        NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
-        NSLog(@"当前缓冲时间：%f",totalBuffer);
-
         if (_playBufferCallBack){
             _playBufferCallBack(playerItem);
         }

@@ -22,9 +22,11 @@ typedef NS_ENUM(NSInteger,WPlayState) {
 //视频播放状态改变回调
 typedef void(^WPlayStateChanged)(WPlayState state);
 //视频总时间改变回调
-typedef void(^WPlayTotalTimeChanged)(NSString * _Nullable totalTime,float totalSecond);
+typedef void(^WPlayTotalTimeChanged)(NSString * _Nullable totalTime,NSTimeInterval totalSecond);
 //视频定时器改变时间回调
-typedef void(^WPlayScheduleTimeChanged)(NSString * _Nullable currentTime,float currentSecond);
+typedef void(^WPlayScheduleTimeChanged)(NSString * _Nullable currentTime,NSTimeInterval currentSecond);
+//视频缓冲进度回调
+typedef void(^WPlayBufferTimeChanged)(NSTimeInterval currentSecond);
 
 @interface WVideoManager : NSObject
 
@@ -66,6 +68,11 @@ typedef void(^WPlayScheduleTimeChanged)(NSString * _Nullable currentTime,float c
  更新时间
  */
 @property (nonatomic,copy) WPlayScheduleTimeChanged scheduleTimeChanged;
+
+/**
+ 更新时间
+ */
+@property (nonatomic,copy) WPlayBufferTimeChanged bufferTimeChanged;
 
 
 /**

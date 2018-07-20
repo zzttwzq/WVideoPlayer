@@ -11,14 +11,6 @@
 
 @class WVideoPlayer;
 @protocol  WPlayerProtocol <NSObject>
-//------播放器播放生命周期
-//播放器准备播放
-- (void) playerPreparePlay:(WVideoPlayer *)player;
-//播放器开始播放
-- (void) playerDidPlay:(WVideoPlayer *)player;
-//播放器结束播放
-- (void) playerFinishPlay:(WVideoPlayer *)player;
-
 
 //------播放器播放状态
 - (void) playerPlayStateChange:(WPlayState)playState player:(WVideoPlayer *)player;
@@ -26,9 +18,9 @@
 //------播放器视图改变
 - (void) playerViewStateChange:(WPlayViewState)viewState player:(WVideoPlayer *)player;
 
-
 //------返回按钮点击
-- (void) backBtnClick;
+- (void) backBtnClick:(WVideoPlayer *)player;
+
 @end
 
 
@@ -39,11 +31,10 @@
 #pragma mark - 播放属性
 @property (nonatomic,assign) float cornerRadius;
 @property (nonatomic,weak) id<WPlayerProtocol> delegate;
-
 /**
- 要显示的view (nil 则是显示在window上)
+ 显示返回按钮
  */
-@property (nonatomic,strong) UIView *showInView;
+@property (nonatomic,assign) BOOL showBackBtn;
 
 
 /**
