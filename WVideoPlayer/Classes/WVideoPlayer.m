@@ -24,12 +24,6 @@
 @property (nonatomic,assign) CGRect originRect;
 @property (nonatomic,assign) BOOL keepOriginRect;
 
-/**
- 要显示的view (nil 则是显示在window上)
- */
-@property (nonatomic,strong) UIView *showInView;
-@property (nonatomic,assign) BOOL keepOriginView;
-
 @end
 
 
@@ -94,7 +88,6 @@ static WVideoPlayer *sharedInstance;
     self.backgroundColor = [UIColor blackColor];
     self.layer.masksToBounds = YES;
 
-    typeof(WVideoPlayer *)weakSelf = self;
 
     //-------------------------------监听屏幕方向-------------------------------
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -102,81 +95,96 @@ static WVideoPlayer *sharedInstance;
                                                  name:UIDeviceOrientationDidChangeNotification
                                                object:nil];
 
-    
+
     //-------------------------------创建播放控制视图-------------------------------
     self.controlView = [[WVideoPlayControlView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    self.controlView.playStateChanged = ^(WPlayState state) {
-
-        weakSelf.videoManager.playState = state;
-    };
-    self.controlView.playTimeChanged = ^(NSTimeInterval playTime) {
-
-        [weakSelf.videoManager playWithTimeInterval:playTime];
-    };
-    self.controlView.slideChanged = ^(BOOL state) {
-
-        if (state) {
-            weakSelf.videoManager.playState = WPlayState_Paused;
-        }
-
-        weakSelf.videoManager.isSliding = state;
-    };
-    self.controlView.viewChanged = ^(WPlayViewState state) {
-
-        //旋转界面
-        if (state == WPlayViewState_FullScreen) {
-            [weakSelf rotateView:UIDeviceOrientationLandscapeLeft];
-        }
-        else{
-            [weakSelf rotateView:UIDeviceOrientationPortrait];
-        }
-
-        //传递视图状态的改变
-        if ([weakSelf.delegate respondsToSelector:@selector(playerPlayStateChange:player:)]){
-            [weakSelf.delegate playerViewStateChange:state player:weakSelf];
-        }
-    };
-    self.controlView.backBtnClick = ^(BOOL state) {
-
-        //传递返回事件
-        if ([weakSelf.delegate respondsToSelector:@selector(backBtnClick:)]){
-            [weakSelf.delegate backBtnClick:weakSelf];
-        }
-    };
+    self.controlView.delegate = self;
     [self addSubview:self.controlView];
 
 
     //-------------------------------创建播放监听者-------------------------------
     self.videoManager = [[WVideoManager alloc] init];
-    self.videoManager.stateChanged = ^(WPlayState state) {
-
-        weakSelf.controlView.playState = state;
-
-        //传递播放状态的改变
-        if ([weakSelf.delegate respondsToSelector:@selector(playerPlayStateChange:player:)]){
-            [weakSelf.delegate playerPlayStateChange:state player:weakSelf];
-        }
-    };
-    self.videoManager.totalTimeChanged = ^(NSString * _Nullable totalTime, NSTimeInterval totalSecond) {
-
-        [weakSelf.controlView setTotalTime:totalTime totalInterval:totalSecond];
-    };
-    self.videoManager.scheduleTimeChanged = ^(NSString * _Nullable currentTime, NSTimeInterval currentSecond) {
-
-        [weakSelf.controlView updateTime:currentTime currentInterval:currentSecond];
-    };
-    self.videoManager.bufferTimeChanged = ^(NSTimeInterval currentSecond) {
-
-        [weakSelf.controlView updateBuffer:currentSecond];
-    };
+    self.videoManager.delegate = self;
     [self.layer addSublayer:self.videoManager.layer];
-
 }
 
-- (void) setShowBackBtn:(BOOL)showBackBtn
+#pragma mark - 处理控制视图回调
+- (void) playStateChanged:(WPlayState)playState control:(WVideoPlayControlView *)control;
 {
-    _showBackBtn = showBackBtn;
-    self.controlView.showBackBtn = showBackBtn;
+    self.videoManager.playState = playState;
+
+    [self bringSubviewToFront:self.controlView];
+
+    if ([self.delegate respondsToSelector:@selector(playerPlayStateChange:player:)]) {
+        [self.delegate playerPlayStateChange:playState player:self];
+    }
+}
+
+- (void) viewStateChanged:(WPlayViewState)viewState control:(WVideoPlayControlView *)control;
+{
+    //旋转界面
+    if (viewState == WPlayViewState_FullScreen) {
+        [self rotateView:UIDeviceOrientationLandscapeLeft];
+    }
+    else{
+        [self rotateView:UIDeviceOrientationPortrait];
+    }
+
+    //传递视图状态的改变
+    if ([self.delegate respondsToSelector:@selector(playerPlayStateChange:player:)]){
+        [self.delegate playerViewStateChange:viewState player:self];
+    }
+}
+
+- (void) playTimeChanged:(NSTimeInterval)timeInterval;
+{
+    [self.videoManager playWithTimeInterval:timeInterval];
+}
+
+- (void) slidingChanged:(BOOL)isSliding;
+{
+    if (isSliding) {
+        self.videoManager.playState = WPlayState_Paused;
+    }
+
+    self.videoManager.isSliding = isSliding;
+}
+
+- (void) backBtnClicked;
+{
+    //传递返回事件
+    if ([self.delegate respondsToSelector:@selector(backBtnClick:)]){
+        [self.delegate backBtnClick:self];
+    }
+}
+
+
+#pragma mark - 处理播放器回调
+- (void) playStateChanged:(WPlayState)playState manager:(WVideoManager *)manager;
+{
+    self.controlView.playState = playState;
+
+    [self bringSubviewToFront:self.controlView];
+
+    //传递播放状态的改变
+    if ([self.delegate respondsToSelector:@selector(playerPlayStateChange:player:)]){
+        [self.delegate playerPlayStateChange:playState player:self];
+    }
+}
+
+- (void) totalTimeChanged:(NSString *)totalTimeString totalTime:(NSTimeInterval)totalTime playItem:(WVideoPlayItem *)playItem;
+{
+    [self.controlView setTotalTime:totalTimeString totalInterval:totalTime];
+}
+
+- (void) scheduleTimeChanged:(NSString *)scheduleTimeString currentTime:(NSTimeInterval)currentTime playItem:(WVideoPlayItem *)playItem;
+{
+    [self.controlView updateTime:scheduleTimeString currentInterval:currentTime];
+}
+
+- (void) bufferTimeChanged:(NSTimeInterval)bufferTime playItem:(WVideoPlayItem *)playItem;
+{
+    [self.controlView updateBuffer:bufferTime];
 }
 
 #pragma mark - 处理旋转
@@ -217,7 +225,7 @@ static WVideoPlayer *sharedInstance;
     else if (orientation == UIDeviceOrientationLandscapeLeft ||
              orientation == UIDeviceOrientationLandscapeRight) {
 
-        NSLog(@">>>UIDeviceOrientationLandscapeLeft");
+        NSLog(@"+++>>>UIDeviceOrientationLandscapeLeft");
 
         //打开系统的状态条
         [[[UIApplication sharedApplication] keyWindow] setWindowLevel:UIWindowLevelStatusBar];
@@ -302,6 +310,24 @@ static WVideoPlayer *sharedInstance;
 
 
 #pragma mark - 处理设置事件
+- (void) setCornerRadius:(float)cornerRadius
+{
+    _cornerRadius = cornerRadius;
+    self.layer.cornerRadius = _cornerRadius;
+}
+
+- (void) setTitle:(NSString *)title
+{
+    _title = title;
+    self.controlView.title.text = title;
+}
+
+- (void) setShowBackBtn:(BOOL)showBackBtn
+{
+    _showBackBtn = showBackBtn;
+    self.controlView.showBackBtn = showBackBtn;
+}
+
 - (void) setFrame:(CGRect)frame
 {
     [super setFrame:frame];
@@ -316,13 +342,24 @@ static WVideoPlayer *sharedInstance;
     self.videoManager.layer.frame = self.bounds;
 }
 
-- (void) addSubview:(UIView *)view
+- (void) setShowInView:(UIView *)showInView
 {
-    [super addSubview:view];
+    _showInView = showInView;
+    [_showInView addSubview:self];
+}
 
-    if (!_keepOriginView){
-        self.showInView = view;
-    }
-    self.keepOriginView = NO;
+//- (void) addSubview:(UIView *)view
+//{
+//    [super addSubview:view];
+//
+//    if (!_keepOriginView){
+//        self.showInView = view;
+//    }
+//    self.keepOriginView = NO;
+//}
+
+- (void)dealloc
+{
+
 }
 @end

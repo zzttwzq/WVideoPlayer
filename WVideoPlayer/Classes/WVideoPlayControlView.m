@@ -14,7 +14,6 @@
 @property (nonatomic,strong) UIImageView *retryBtn;
 @property (nonatomic,strong) UILabel *currentTime;
 @property (nonatomic,strong) UILabel *totalTime;
-@property (nonatomic,strong) UILabel *title;
 @property (nonatomic,strong) UIImageView *fullScreen;
 @property (nonatomic,strong) UIView *fullScreenTapView;
 @property (nonatomic,strong) UISlider *currentProgress;
@@ -78,19 +77,18 @@
 
         
         //=======返回按钮
-        _backImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 10, 30, 30)];
-        _backImage.image = [UIImage imageNamed:@"left_back_icon_white_60x60"];
-        _backImage.userInteractionEnabled = YES;
-        [_backImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back)]];
-        _backImage.backgroundColor = [UIColor redColor];
-        [_backView addSubview:_backImage];
-
         _title = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, ScreenWidth, 30)];
         _title.font = [UIFont systemFontOfSize:18];
         _title.textColor = [UIColor whiteColor];
         _title.textAlignment = NSTextAlignmentCenter;
         _title.alpha = 0;
         [_backView addSubview:_title];
+
+        _backImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 10, 30, 30)];
+        _backImage.image = [UIImage imageNamed:@"left_back_icon_white_60x60"];
+        _backImage.userInteractionEnabled = YES;
+        [_backImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back)]];
+        [_backView addSubview:_backImage];
 
         //-------------------------------播放控制器区-------------------------------
         int playImgHeight = 50;
@@ -253,20 +251,22 @@
 
             if (!self.isSliding) {
 
+                __weak typeof(WVideoPlayControlView *)weakSelf = self;
                 [self startTimer:1 timeout:4 decrease:YES mainThread:^(float count) {
 
                     if (count == 4) {
 
                         [UIView animateWithDuration:0.3 animations:^{
 
-                            if (self.backView.alpha == 0) {
+                            if (weakSelf.backView.alpha == 0) {
 
-                                self.backView.alpha = 1;
-                                self.currentProgress2.alpha = 0;
-                            }else{
+                                weakSelf.backView.alpha = 1;
+                                weakSelf.currentProgress2.alpha = 0;
+                            }
+                            else{
 
-                                self.backView.alpha = 0;
-                                self.currentProgress2.alpha = 1;
+                                weakSelf.backView.alpha = 0;
+                                weakSelf.currentProgress2.alpha = 1;
                             }
                         }];
                     }
@@ -397,15 +397,17 @@
         self.viewState = WPlayViewState_FullScreen;
     }
 
-    if (self.viewChanged) {
-        self.viewChanged(self.viewState);
+    if ([self.delegate respondsToSelector:@selector(viewStateChanged:control:)]) {
+        [self.delegate viewStateChanged:self.viewState control:self];
     }
 }
 
 -(void)retry
 {
     self.playState = WPlayState_isPlaying;
-    self.playStateChanged(self.playState);
+    if ([self.delegate respondsToSelector:@selector(playStateChanged:control:)]) {
+        [self.delegate playStateChanged:self.playState control:self];
+    }
 }
 
 
@@ -420,7 +422,9 @@
 
         self.playState = WPlayState_Paused;
     }
-    self.playStateChanged(self.playState);
+    if ([self.delegate respondsToSelector:@selector(playStateChanged:control:)]) {
+        [self.delegate playStateChanged:self.playState control:self];
+    }
 }
 
 - (void) progressChanged
@@ -429,9 +433,8 @@
     self.currentTime.text = [WVideoPlayItem convertTime:self.currentProgress.value];
 
     //播放时间变化回调
-    if (self.playTimeChanged){
-
-        self.playTimeChanged(self.currentProgress.value);
+    if ([self.delegate respondsToSelector:@selector(playTimeChanged:)]) {
+        [self.delegate playTimeChanged:self.currentProgress.value];
     }
 }
 
@@ -452,8 +455,8 @@
     _tap.enabled = NO;
     self.isSliding = YES;
 
-    if (self.slideChanged) {
-        self.slideChanged(YES);
+    if ([self.delegate respondsToSelector:@selector(slidingChanged:)]) {
+        [self.delegate slidingChanged:self.isSliding];
     }
 }
 
@@ -462,8 +465,8 @@
     _tap.enabled = YES;
     self.isSliding = NO;
 
-    if (self.slideChanged) {
-        self.slideChanged(NO);
+    if ([self.delegate respondsToSelector:@selector(slidingChanged:)]) {
+        [self.delegate slidingChanged:self.isSliding];
     }
 }
 
@@ -473,13 +476,14 @@
 
         self.viewState = WPlayViewState_Normalize;
 
-        if (self.viewChanged) {
-            self.viewChanged(self.viewState);
+        if ([self.delegate respondsToSelector:@selector(viewStateChanged:control:)]) {
+            [self.delegate viewStateChanged:self.viewState control:self];
         }
-    }else{
+    }
+    else{
 
-        if (self.backBtnClick) {
-            self.backBtnClick(YES);
+        if ([self.delegate respondsToSelector:@selector(backBtnClicked)]) {
+            [self.delegate backBtnClicked];
         }
     }
 }
@@ -626,7 +630,8 @@
 {
     _playState = playState;
 
-    if (self.playState == WPlayState_isPlaying) {
+    if (self.playState == WPlayState_isPlaying ||
+        self.playState == WPlayState_Stoped) {
 
         //播放按钮
         self.playIMG.image = [UIImage imageNamed:@"btn_video_stop_90x90"];
@@ -646,8 +651,7 @@
         self.retryBtn.alpha = 0;
     }
     else if (self.playState == WPlayState_Finished ||
-             self.playState == WPlayState_PrepareToPlay ||
-             self.playState == WPlayState_Stoped) {
+             self.playState == WPlayState_PrepareToPlay) {
 
         //播放按钮
         self.playIMG.image = [UIImage imageNamed:@"btn_video_play_90x90"];
@@ -694,5 +698,10 @@
         self.keepOriginRect = YES;
         self.frame = CGRectMake(0, 0, ScreenHeight, ScreenWidth);
     }
+}
+
+- (void)dealloc
+{
+
 }
 @end

@@ -3,60 +3,44 @@
 //  FBSnapshotTestCase
 //
 //  Created by 吴志强 on 2018/7/6.
+//  处理用户事件 传递给 控制器
 //
 
 #import <UIKit/UIKit.h>
 #import "WVideoManager.h"
 #import "UIView+WZQView.h"
 
-//处理用户事件 传递给 控制器
-//改变状态
+#define AVPLAYER_BAR_HEIGHT 50
+
 
 typedef NS_ENUM(NSInteger,WPlayViewState) {
     WPlayViewState_Normalize,
     WPlayViewState_FullScreen,
 };
 
-#define AVPLAYER_BAR_HEIGHT 50
+@class WVideoPlayControlView;
+@protocol WPlayControlDelegate <NSObject>
 
-//视频界面状态改变回调
-typedef void(^WPlayViewChanged)(WPlayViewState state);
-//视频时间改变
-typedef void(^WPlayTimeChanged)(NSTimeInterval playTime);
-//视频拖拽改变
-typedef void(^WPlaySlideChanged)(BOOL state);
+- (void) playStateChanged:(WPlayState)playState control:(WVideoPlayControlView *)control;
+
+- (void) viewStateChanged:(WPlayViewState)viewState control:(WVideoPlayControlView *)control;
+
+- (void) playTimeChanged:(NSTimeInterval)timeInterval;
+
+- (void) slidingChanged:(BOOL)isSliding;
+
+- (void) backBtnClicked;
+
+@end
 
 @interface WVideoPlayControlView : UIView
 @property (nonatomic,assign) WPlayState playState;
 @property (nonatomic,assign) WPlayViewState viewState;
+@property (nonatomic,strong) UILabel *title;
 @property (nonatomic,assign) BOOL showBackBtn;
+@property (nonatomic,weak) id <WPlayControlDelegate> delegate;
 
-/**
- 视频界面改变
- */
-@property (nonatomic,copy) WPlayViewChanged viewChanged;
-
-/**
- 视频状态改变
- */
-@property (nonatomic,copy) WPlayStateChanged playStateChanged;
-
-/**
- 视频播放时间改变
- */
-@property (nonatomic,copy) WPlayTimeChanged playTimeChanged;
-
-/**
- 视频拖拽状态改变
- */
-@property (nonatomic,copy) WPlaySlideChanged slideChanged;
-
-/**
- 视频返回按钮点击
- */
-@property (nonatomic,copy) WPlaySlideChanged backBtnClick;
-
-
+#pragma mark - 设置播放器时间，进度等
 /**
  设置总时间
 

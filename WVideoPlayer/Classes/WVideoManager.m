@@ -32,7 +32,7 @@
         _player = [AVPlayer new];
         _layer = [AVPlayerLayer playerLayerWithPlayer:_player];
 
-        typeof(WVideoManager *)weakSelf = self;
+        __weak typeof(WVideoManager *)weakSelf = self;
         //        对于1分钟以内的视频就每1/30秒刷新一次页面，大于1分钟的每秒一次就行
         CMTime interval = _duration > 60 ? CMTimeMake(1, 1) : CMTimeMake(1, 30);
         //        这个方法就是每隔多久调用一次block，函数返回的id类型的对象在不使用时用-removeTimeObserver:释放，官方api是这样说的
@@ -44,8 +44,9 @@
 
                                                                   //设置状态
                                                                   weakSelf.playState = WPlayState_Finished;
-                                                                  if (weakSelf.stateChanged) {
-                                                                      weakSelf.stateChanged(weakSelf.playState);
+
+                                                                  if ([weakSelf.delegate respondsToSelector:@selector(playStateChanged:manager:)]) {
+                                                                      [weakSelf.delegate playStateChanged:weakSelf.playState manager:weakSelf];
                                                                   }
                                                               }else{
 
@@ -70,17 +71,18 @@
     CMTime startTime = CMTimeMakeWithSeconds(timeinterval, _fps);
 
     NSString *currentTime = [WVideoPlayItem convertTime:timeinterval];// 转换成播放时间
-    if (_scheduleTimeChanged) {
-        _scheduleTimeChanged(currentTime,timeinterval);
+    if ([self.delegate respondsToSelector:@selector(scheduleTimeChanged:currentTime:playItem:)]) {
+        [self.delegate scheduleTimeChanged:currentTime currentTime:timeinterval playItem:self.item];
     }
 
+    __weak typeof(WVideoManager *)weakSelf = self;
     [self.player seekToTime:startTime completionHandler:^(BOOL finished) {
 
-        if (!self.isSliding) {
+        if (!weakSelf.isSliding) {
 
-            self.playState = WPlayState_isPlaying;
-            if (self.stateChanged) {
-                self.stateChanged(self.playState);
+            weakSelf.playState = WPlayState_isPlaying;
+            if ([weakSelf.delegate respondsToSelector:@selector(playStateChanged:manager:)]) {
+                [weakSelf.delegate playStateChanged:weakSelf.playState manager:weakSelf];
             }
         }
     }];
@@ -135,7 +137,7 @@
  */
 - (void) setItem:(WVideoPlayItem *)item
 {
-    typeof(WVideoManager *)weakSelf = self;
+    __weak typeof(WVideoManager *)weakSelf = self;
 
     _item = item;
     _item.itemStatusCallBack = ^(id objc) {
@@ -149,35 +151,30 @@
             // 转换成播放时间
             NSString *totaltime = [WVideoPlayItem convertTime:weakSelf.totalSecond];
 
-            //获取总时间，并回调
-            if (weakSelf.totalTimeChanged) {
-                weakSelf.totalTimeChanged(totaltime,weakSelf.totalSecond);
+            // 获取总时间，并回调
+            if ([weakSelf.delegate respondsToSelector:@selector(totalTimeChanged:totalTime:playItem:)]) {
+                [weakSelf.delegate totalTimeChanged:totaltime totalTime:weakSelf.totalSecond playItem:weakSelf.item];
             }
 
             //设置播放状态
             weakSelf.playState = WPlayState_isPlaying;
-            if (weakSelf.stateChanged) {
-                weakSelf.stateChanged(weakSelf.playState);
-            }
             [WVideoPlayItem showDebugMessage:@"开始播放!!!"];
         }
         else if ([playerItem status] == AVPlayerStatusFailed) {
 
             //设置播放状态
             weakSelf.playState = WPlayState_Failed;
-            if (weakSelf.stateChanged) {
-                weakSelf.stateChanged(weakSelf.playState);
-            }
             [WVideoPlayItem showDebugMessage:@"播放失败"];
         }
         else if ([playerItem status] == AVPlayerStatusUnknown) {
 
             //设置播放状态
             weakSelf.playState = WPlayState_UnKown;
-            if (weakSelf.stateChanged) {
-                weakSelf.stateChanged(weakSelf.playState);
-            }
             [WVideoPlayItem showDebugMessage:@"播放状态未知"];
+        }
+
+        if ([weakSelf.delegate respondsToSelector:@selector(playStateChanged:manager:)]) {
+            [weakSelf.delegate playStateChanged:weakSelf.playState manager:weakSelf];
         }
 
         //获取播放参数
@@ -198,8 +195,8 @@
         float durationSeconds = CMTimeGetSeconds(timeRange.duration);
         NSTimeInterval totalBuffer = startSeconds + durationSeconds;//缓冲总长度
 
-        if (weakSelf.bufferTimeChanged) {
-            weakSelf.bufferTimeChanged(totalBuffer);
+        if ([weakSelf.delegate respondsToSelector:@selector(bufferTimeChanged:playItem:)]) {
+            [weakSelf.delegate bufferTimeChanged:totalBuffer playItem:weakSelf.item];
         }
     };
 
@@ -220,8 +217,8 @@
     if (_totalSecond >= [[NSString stringWithFormat:@"%0.0f",currentSecond] integerValue]) {
 
         NSString *currentTime = [WVideoPlayItem convertTime:currentSecond];// 转换成播放时间
-        if (_scheduleTimeChanged) {
-            _scheduleTimeChanged(currentTime,currentSecond);
+        if ([self.delegate respondsToSelector:@selector(scheduleTimeChanged:currentTime:playItem:)]) {
+            [self.delegate scheduleTimeChanged:currentTime currentTime:currentSecond playItem:self.item];
         }
     }
 }
@@ -235,10 +232,13 @@
 - (void) updatePlayerState:(WPlayState)state
 {
     self.playState = state;
-    if (self.stateChanged){
-        self.stateChanged(state);
+    if ([self.delegate respondsToSelector:@selector(playStateChanged:manager:)]) {
+        [self.delegate playStateChanged:self.playState manager:self];
     }
 }
 
+- (void)dealloc
+{
 
+}
 @end

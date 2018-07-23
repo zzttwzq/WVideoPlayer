@@ -24,16 +24,15 @@
 @end
 
 
-@interface WVideoPlayer : UIView
-
-
-#pragma mark - 播放属性
+@interface WVideoPlayer : UIView<WPlayControlDelegate,WPlayManagerDelegate>
 @property (nonatomic,assign) float cornerRadius;
+@property (nonatomic,assign) BOOL showBackBtn;
+@property (nonatomic,copy) NSString *title;
 @property (nonatomic,weak) id<WPlayerProtocol> delegate;
 /**
- 显示返回按钮
+ 要显示的view (nil 则是显示在window上)
  */
-@property (nonatomic,assign) BOOL showBackBtn;
+@property (nonatomic,strong) UIView *showInView;
 
 
 /**
@@ -42,6 +41,7 @@
  @return 返回实例化的对象
  */
 +(WVideoPlayer *)videoPlayer;
+
 
 #pragma mark - 处理播放源
 /**
@@ -77,4 +77,5 @@
  停止播放
  */
 - (void) stop;
+
 @end

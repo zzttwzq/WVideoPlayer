@@ -19,24 +19,26 @@ typedef NS_ENUM(NSInteger,WPlayState) {
     WPlayState_UnKown,
 };
 
+@class WVideoManager;
+@protocol WPlayManagerDelegate <NSObject>
 
-//视频播放状态改变回调
-typedef void(^WPlayStateChanged)(WPlayState state);
-//视频总时间改变回调
-typedef void(^WPlayTotalTimeChanged)(NSString * _Nullable totalTime,NSTimeInterval totalSecond);
-//视频定时器改变时间回调
-typedef void(^WPlayScheduleTimeChanged)(NSString * _Nullable currentTime,NSTimeInterval currentSecond);
-//视频缓冲进度回调
-typedef void(^WPlayBufferTimeChanged)(NSTimeInterval currentSecond);
+- (void) playStateChanged:(WPlayState)playState manager:(WVideoManager *)manager;
 
+- (void) totalTimeChanged:(NSString *)totalTimeString totalTime:(NSTimeInterval)totalTime playItem:(WVideoPlayItem *)playItem;
+
+- (void) scheduleTimeChanged:(NSString *)scheduleTimeString currentTime:(NSTimeInterval)currentTime playItem:(WVideoPlayItem *)playItem;
+
+- (void) bufferTimeChanged:(NSTimeInterval)bufferTime playItem:(WVideoPlayItem *)playItem;
+
+@end
 
 @interface WVideoManager : NSObject
+@property (nonatomic,weak) id<WPlayManagerDelegate> delegate;
 
 /**
  播放图层
  */
 @property (nonatomic,strong) AVPlayerLayer *layer;
-
 
 
 /**
@@ -53,28 +55,6 @@ typedef void(^WPlayBufferTimeChanged)(NSTimeInterval currentSecond);
  进度条正在被拖拽
  */
 @property (nonatomic,assign) BOOL isSliding;
-
-
-
-/**
- 播放状态改变
- */
-@property (nonatomic,copy) WPlayStateChanged stateChanged;
-
-/**
- 总时间的改变
- */
-@property (nonatomic,copy) WPlayTotalTimeChanged totalTimeChanged;
-
-/**
- 更新时间
- */
-@property (nonatomic,copy) WPlayScheduleTimeChanged scheduleTimeChanged;
-
-/**
- 更新时间
- */
-@property (nonatomic,copy) WPlayBufferTimeChanged bufferTimeChanged;
 
 
 /**
