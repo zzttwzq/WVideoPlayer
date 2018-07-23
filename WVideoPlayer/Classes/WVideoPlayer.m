@@ -97,6 +97,7 @@ static WVideoPlayer *sharedInstance;
 
 
     //-------------------------------创建播放控制视图-------------------------------
+    [self.controlView removeFromSuperview];
     self.controlView = [[WVideoPlayControlView alloc] initWithFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     self.controlView.delegate = self;
     [self addSubview:self.controlView];

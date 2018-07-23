@@ -35,7 +35,8 @@
 @property (nonatomic,strong) UIView *backView;
 @property (nonatomic,assign) BOOL isSliding;
 
-@property (nonatomic, strong) dispatch_source_t timer; //定时器
+@property (nonatomic,assign) int timeCount;
+@property (nonatomic, strong) NSTimer *timer; //定时器
 
 #define MYBUNDLE_PATH [[NSBundle mainBundle] pathForResource:@"WVideoPlayer" ofType:@"bundle"]
 
@@ -181,9 +182,6 @@
         [_currentProgress addTarget:self action:@selector(progressChanged) forControlEvents:UIControlEventValueChanged];
         [_currentProgress addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpInside];
         [_currentProgress addTarget:self action:@selector(handleTouchUp:) forControlEvents:UIControlEventTouchUpOutside];
-
-        self.backView.alpha = 0;
-        [self showOrHideControlBar];
     }
     return self;
 }
@@ -245,133 +243,29 @@
             self.backView.alpha = 0;
             self.currentProgress2.alpha = 1;
         }
-    } completion:^(BOOL finished) {
-
-        if (self.backView.alpha == 1) {
-
-            if (!self.isSliding) {
-
-                __weak typeof(WVideoPlayControlView *)weakSelf = self;
-                [self startTimer:1 timeout:4 decrease:YES mainThread:^(float count) {
-
-                    if (count == 4) {
-
-                        [UIView animateWithDuration:0.3 animations:^{
-
-                            if (weakSelf.backView.alpha == 0) {
-
-                                weakSelf.backView.alpha = 1;
-                                weakSelf.currentProgress2.alpha = 0;
-                            }
-                            else{
-
-                                weakSelf.backView.alpha = 0;
-                                weakSelf.currentProgress2.alpha = 1;
-                            }
-                        }];
-                    }
-
-                } backThread:nil
-                compolete:nil];
-            }
-        }
     }];
+
+    if (self.backView.alpha == 1 &&
+        !self.isSliding &&
+        self.playState == WPlayState_isPlaying &&
+        _timeCount == 0) {
+
+        _timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(hideControl) userInfo:nil repeats:YES];
+    }
 }
 
 
-/**
- 开启一个定时器，可以自定义时间间隔，时间长度，累加还是累减，有主线程和后台线程回调
-
- @param perTime 间隔频率（s）
- @param timeout 总的时长
- @param decrease 是否减少
- @param mainThread 主现场回调
- @param backThread 后台线程回调
- @param compolete 完成回调
- */
--(void)startTimer:(NSTimeInterval)perTime
-          timeout:(NSTimeInterval)timeout
-         decrease:(BOOL)decrease
-       mainThread:(floatCallBack)mainThread
-       backThread:(floatCallBack)backThread
-        compolete:(StateBlock)compolete;
+- (void) hideControl
 {
-    __block int count = 0;
-    if (decrease) {
-        count = timeout;
+    if (_timeCount < 3) {
+
+        _timeCount ++;
     }
+    else{
 
-        // 获得队列
-    dispatch_queue_t queue = dispatch_get_main_queue();
-
-        // 创建一个定时器(dispatch_source_t本质还是个OC对象)
-    self.timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
-
-        // 设置定时器的各种属性（几时开始任务，每隔多长时间执行一次）
-        // GCD的时间参数，一般是纳秒（1秒 == 10的9次方纳秒）
-        // 何时开始执行第一个任务
-        // dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC) 比当前时间晚3秒
-    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(perTime * NSEC_PER_SEC));
-    uint64_t interval = (uint64_t)(perTime * NSEC_PER_SEC);
-    dispatch_source_set_timer(self.timer, start, interval, 0);
-
-        //设置回调
-    dispatch_source_set_event_handler(self.timer, ^{
-
-            //通知主线程
-        dispatch_async(dispatch_get_main_queue(), ^{
-
-            if (mainThread) {
-                mainThread(count);
-            }
-        });
-
-            //通知后台线程
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-
-            if (backThread) {
-                backThread(count);
-            }
-        });
-
-            //累加count
-        if (decrease) {
-
-            count -= perTime;
-            if (count == 0) {
-
-                    //取消定时器
-                [self cancelTimer];
-
-                    //完成回调
-                dispatch_async(dispatch_get_main_queue(), ^{
-
-                    if (compolete) {
-                        compolete(YES);
-                    }
-                });
-            }
-        }else{
-
-            count += perTime;
-            if (count == timeout) {
-
-                    //取消定时器
-                [self cancelTimer];
-
-                    //完成回调
-                dispatch_async(dispatch_get_main_queue(), ^{
-
-                    if (compolete) {
-                        compolete(YES);
-                    }
-                });
-            }
-        }
-    });
-
-        // 启动定时器
-    dispatch_resume(self.timer);
+        [self cancelTimer];
+        [self showOrHideControlBar];
+    }
 }
 
 
@@ -380,8 +274,9 @@
  */
 -(void)cancelTimer
 {
-        //取消定时器
-    dispatch_cancel(self.timer);
+    _timeCount = 0;
+    //取消定时器
+    [self.timer invalidate];
     self.timer = nil;
 }
 
@@ -418,10 +313,14 @@
         self.playState == WPlayState_Finished) {
 
         self.playState = WPlayState_isPlaying;
-    }else if (self.playState == WPlayState_isPlaying) {
+    }
+    else if (self.playState == WPlayState_isPlaying) {
 
+        [self cancelTimer];
         self.playState = WPlayState_Paused;
     }
+
+
     if ([self.delegate respondsToSelector:@selector(playStateChanged:control:)]) {
         [self.delegate playStateChanged:self.playState control:self];
     }
@@ -522,7 +421,7 @@
         volume = 0;
     }
 
-        //设置系统音量
+//        设置系统音量
 //    [self setSystemVolume:volume];
 //        //设置百分比
 //    [self setHintLab:volume];
@@ -632,6 +531,13 @@
 
     if (self.playState == WPlayState_isPlaying ||
         self.playState == WPlayState_Stoped) {
+
+        if (self.playState == WPlayState_isPlaying) {
+            [self showOrHideControlBar];
+        }
+        else{
+            [self cancelTimer];
+        }
 
         //播放按钮
         self.playIMG.image = [UIImage imageNamed:@"btn_video_stop_90x90"];
