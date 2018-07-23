@@ -7,13 +7,22 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import <WBasicLibrary/WBasicHeader.h>
-#import <WExpandLibrary/WExpandHeader.h>
 
 #define ScreenWidth [UIScreen mainScreen].bounds.size.width
 #define ScreenHeight [UIScreen mainScreen].bounds.size.height
 
+#define WBundle_Name @"WVideoPlayer.bundle"
+#define WBundle_Path [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:WBundle_Name]
+#define WBundle [NSBundle bundleWithPath:WBundle_Path]
+
+//返回id对象 数据
 typedef void(^IDDataBlock)(id objc);
+//返回状态
+typedef void (^StateBlock)(BOOL state);
+//返回int 数据
+typedef void (^CountBlock)(int count);
+//返回float 数据
+typedef void (^floatCallBack)(float update);
 
 @interface WVideoPlayItem : NSObject
 @property (nonatomic,strong) AVPlayerItem *playerItem;

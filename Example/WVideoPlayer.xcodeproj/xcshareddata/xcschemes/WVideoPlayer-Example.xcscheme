@@ -38,6 +38,16 @@
                ReferencedContainer = "container:WVideoPlayer.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1CADEA14210560B600713DDF"
+               BuildableName = "WVideoPlayerTests.xctest"
+               BlueprintName = "WVideoPlayerTests"
+               ReferencedContainer = "container:WVideoPlayer.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

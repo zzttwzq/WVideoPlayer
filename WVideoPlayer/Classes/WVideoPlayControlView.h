@@ -7,6 +7,7 @@
 
 #import <UIKit/UIKit.h>
 #import "WVideoManager.h"
+#import "UIView+WZQView.h"
 
 //处理用户事件 传递给 控制器
 //改变状态

@@ -7,7 +7,7 @@
 
 #import "WVideoPlayControlView.h"
 #import "WVideoManager.h"
-
+#import "UIView+WZQView.h"
 
 @class WVideoPlayer;
 @protocol  WPlayerProtocol <NSObject>
@@ -25,7 +25,6 @@
 
 
 @interface WVideoPlayer : UIView
-
 
 
 #pragma mark - 播放属性

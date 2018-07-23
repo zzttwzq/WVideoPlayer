@@ -1,6 +1,0 @@
-framework module WExpandLibrary {
-  umbrella header "WExpandLibrary-umbrella.h"
-
-  export *
-  module * { export * }
-}

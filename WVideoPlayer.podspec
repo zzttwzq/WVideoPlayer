@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'WVideoPlayer'
-  s.version          = '0.1.6'
+  s.version          = '0.1.7'
   s.summary          = 'iOS avplayer 视频框架的一个封装，能够实现在线和本地视频，音频播放，可以修改的播放控制界面。'
 
 # This description is used to generate tags and improve search results.
@@ -23,7 +23,7 @@ TODO: Add long description of the pod here.
 
   s.homepage         = 'https://github.com/zzttwzq/WVideoPlayer'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.license          = { :type => 'M´IT', :file => 'LICENSE' }
   s.author           = { 'zzttwzq' => '1076976262@qq.com' }
   s.source           = { :git => 'https://github.com/zzttwzq/WVideoPlayer.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
@@ -32,11 +32,11 @@ TODO: Add long description of the pod here.
 
   s.source_files = 'WVideoPlayer/Classes/**/*'
   
-  # s.resource_bundles = {
-  #   'WVideoPlayer' => ['WVideoPlayer/Assets/*.png']
-  # }
+  s.resource_bundles = {
+    'WVideoPlayer' => ['WVideoPlayer/Assets/*.png']
+  }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  s.dependency 'WExpandLibrary'
+  # s.dependency 'WExpandLibrary'
 end

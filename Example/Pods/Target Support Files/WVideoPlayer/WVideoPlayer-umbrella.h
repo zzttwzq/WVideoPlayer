@@ -10,7 +10,8 @@
 #endif
 #endif
 
-#import "WVideoControl.h"
+#import "UIView+WZQView.h"
+#import "WVideoManager.h"
 #import "WVideoPlayControlView.h"
 #import "WVideoPlayer.h"
 #import "WVideoPlayItem.h"

@@ -182,8 +182,8 @@ static WVideoPlayer *sharedInstance;
 #pragma mark - 处理旋转
 - (void) handleDeviceOrientationDidChange:(NSNotification *)notifi
 {
-    UIDevice *device = [UIDevice currentDevice];
-    [self rotateView:device.orientation];
+//    UIDevice *device = [UIDevice currentDevice];
+//    [self rotateView:device.orientation];
 }
 
 

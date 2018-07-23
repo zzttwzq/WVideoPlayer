@@ -6,8 +6,6 @@
 //
 
 #import "WVideoPlayControlView.h"
-#import <WExpandLibrary/WExpandHeader.h>
-#import <WBasicLibrary/WBasicHeader.h>
 #import <MediaPlayer/MediaPlayer.h>
 
 @interface WVideoPlayControlView ()
@@ -36,8 +34,13 @@
 @property (nonatomic,assign) NSTimeInterval totalInterVals;
 
 @property (nonatomic,strong) UIView *backView;
-
 @property (nonatomic,assign) BOOL isSliding;
+
+@property (nonatomic, strong) dispatch_source_t timer; //定时器
+
+#define MYBUNDLE_PATH [[NSBundle mainBundle] pathForResource:@"WVideoPlayer" ofType:@"bundle"]
+
+#define MYBUNDLE        [NSBundle bundleWithPath:MYBUNDLE_PATH]
 
 @end
 
@@ -63,15 +66,15 @@
         [self addGestureRecognizer:tap];
 
         //-------------------------------touchview-------------------------------
-        _lightControlView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width/2, self.height)];
-        _lightControlView.alpha = 0;
-        [_lightControlView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(lightControlTouch:)]];
-        [_backView addSubview:_lightControlView];
-
-        _volumeControlView = [[UIView alloc] initWithFrame:CGRectMake(self.width/2, 0, self.width/2, self.height)];
-        _volumeControlView.alpha = 0;
-        [_volumeControlView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(volumeControlTouch:)]];
-        [_backView addSubview:_volumeControlView];
+//        _lightControlView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, self.width/2, self.height)];
+//        _lightControlView.alpha = 0;
+//        [_lightControlView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(lightControlTouch:)]];
+//        [_backView addSubview:_lightControlView];
+//
+//        _volumeControlView = [[UIView alloc] initWithFrame:CGRectMake(self.width/2, 0, self.width/2, self.height)];
+//        _volumeControlView.alpha = 0;
+//        [_volumeControlView addGestureRecognizer:[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(volumeControlTouch:)]];
+//        [_backView addSubview:_volumeControlView];
 
         
         //=======返回按钮
@@ -79,6 +82,7 @@
         _backImage.image = [UIImage imageNamed:@"left_back_icon_white_60x60"];
         _backImage.userInteractionEnabled = YES;
         [_backImage addGestureRecognizer:[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(back)]];
+        _backImage.backgroundColor = [UIColor redColor];
         [_backView addSubview:_backImage];
 
         _title = [[UILabel alloc] initWithFrame:CGRectMake(0, 10, ScreenWidth, 30)];
@@ -249,10 +253,9 @@
 
             if (!self.isSliding) {
 
-                //如果正在播放就默认倒计时2秒取消
-                [WThreadTool startTimerWithTotalTime:4 countHandler:^(float update) {
+                [self startTimer:1 timeout:4 decrease:YES mainThread:^(float count) {
 
-                    if (update == 2) {
+                    if (count == 4) {
 
                         [UIView animateWithDuration:0.3 animations:^{
 
@@ -267,10 +270,119 @@
                             }
                         }];
                     }
-                }];
+
+                } backThread:nil
+                compolete:nil];
             }
         }
     }];
+}
+
+
+/**
+ 开启一个定时器，可以自定义时间间隔，时间长度，累加还是累减，有主线程和后台线程回调
+
+ @param perTime 间隔频率（s）
+ @param timeout 总的时长
+ @param decrease 是否减少
+ @param mainThread 主现场回调
+ @param backThread 后台线程回调
+ @param compolete 完成回调
+ */
+-(void)startTimer:(NSTimeInterval)perTime
+          timeout:(NSTimeInterval)timeout
+         decrease:(BOOL)decrease
+       mainThread:(floatCallBack)mainThread
+       backThread:(floatCallBack)backThread
+        compolete:(StateBlock)compolete;
+{
+    __block int count = 0;
+    if (decrease) {
+        count = timeout;
+    }
+
+        // 获得队列
+    dispatch_queue_t queue = dispatch_get_main_queue();
+
+        // 创建一个定时器(dispatch_source_t本质还是个OC对象)
+    self.timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER, 0, 0, queue);
+
+        // 设置定时器的各种属性（几时开始任务，每隔多长时间执行一次）
+        // GCD的时间参数，一般是纳秒（1秒 == 10的9次方纳秒）
+        // 何时开始执行第一个任务
+        // dispatch_time(DISPATCH_TIME_NOW, 1.0 * NSEC_PER_SEC) 比当前时间晚3秒
+    dispatch_time_t start = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(perTime * NSEC_PER_SEC));
+    uint64_t interval = (uint64_t)(perTime * NSEC_PER_SEC);
+    dispatch_source_set_timer(self.timer, start, interval, 0);
+
+        //设置回调
+    dispatch_source_set_event_handler(self.timer, ^{
+
+            //通知主线程
+        dispatch_async(dispatch_get_main_queue(), ^{
+
+            if (mainThread) {
+                mainThread(count);
+            }
+        });
+
+            //通知后台线程
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+
+            if (backThread) {
+                backThread(count);
+            }
+        });
+
+            //累加count
+        if (decrease) {
+
+            count -= perTime;
+            if (count == 0) {
+
+                    //取消定时器
+                [self cancelTimer];
+
+                    //完成回调
+                dispatch_async(dispatch_get_main_queue(), ^{
+
+                    if (compolete) {
+                        compolete(YES);
+                    }
+                });
+            }
+        }else{
+
+            count += perTime;
+            if (count == timeout) {
+
+                    //取消定时器
+                [self cancelTimer];
+
+                    //完成回调
+                dispatch_async(dispatch_get_main_queue(), ^{
+
+                    if (compolete) {
+                        compolete(YES);
+                    }
+                });
+            }
+        }
+    });
+
+        // 启动定时器
+    dispatch_resume(self.timer);
+}
+
+
+/**
+ 取消定时器
+ */
+-(void)cancelTimer
+{
+        //取消定时器
+    dispatch_cancel(self.timer);
+    self.timer = nil;
 }
 
 
@@ -377,7 +489,7 @@
 {
     CGPoint moviePoint = [pan translationInView:self];
     float screenBrightNess = -moviePoint.y/300;
-    screenBrightNess += [WDevice getScreenBrightness];
+    screenBrightNess += [WVideoPlayControlView getScreenBrightness];
     if (screenBrightNess >= 1) {
 
         screenBrightNess = 1;
@@ -387,7 +499,7 @@
     }
 
         //设置屏幕亮度
-    [WDevice setScreenBrightness:screenBrightNess];
+    [WVideoPlayControlView setScreenBrightness:screenBrightNess];
         //设置百分比
 //    [self setHintLab:screenBrightNess];
 }
@@ -397,7 +509,7 @@
 {
     CGPoint moviePoint = [pan translationInView:self];
     float volume = -moviePoint.y/300;
-    volume += [WDevice getScreenBrightness];
+    volume += [WVideoPlayControlView getScreenBrightness];
     if (volume >= 1) {
 
         volume = 1;
@@ -410,6 +522,28 @@
 //    [self setSystemVolume:volume];
 //        //设置百分比
 //    [self setHintLab:volume];
+}
+
+
+/**
+ 设置系统屏幕亮度
+
+ @param brightness 屏幕亮度
+ */
++(void)setScreenBrightness:(CGFloat)brightness;
+{
+    [[UIScreen mainScreen] setBrightness:brightness];
+}
+
+
+/**
+ 获取屏幕亮度
+
+ @return 返回屏幕亮度
+ */
++(float)getScreenBrightness;
+{
+    return [UIScreen mainScreen].brightness;
 }
 
 #pragma mark - 处理设置事件

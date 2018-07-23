@@ -7,8 +7,7 @@
 //
 
 #import "WViewController.h"
-#import <WExpandLibrary/WExpandHeader.h>
-#import <WBasicLibrary/WBasicHeader.h>
+#import <WVideoPlayer/WVideoPlayer.h>
 
 @interface WViewController ()
 
@@ -20,6 +19,12 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view, typically from a nib.
+
+    WVideoPlayer *player = [WVideoPlayer videoPlayer];
+    player.frame = CGRectMake(0, 0, ScreenWidth, 300);
+    player.cornerRadius = 10;
+    [player playWithUrlString:@""];
+    [self.view addSubview:player];
 }
 
 - (void)didReceiveMemoryWarning
