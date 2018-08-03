@@ -211,6 +211,7 @@
 - (void) updateTime:(NSString *)currentTime
       currentInterval:(NSTimeInterval)currentInterval;
 {
+//    NSLog(@">>>%f",currentInterval);
     self.currentTime.text = currentTime;
     self.currentProgress.value = currentInterval;
     self.currentProgress2.progress = currentInterval/_totalInterVals;
@@ -224,7 +225,7 @@
  */
 - (void) updateBuffer:(NSTimeInterval)currentInterval;
 {
-    NSLog(@"%f",currentInterval);
+//    NSLog(@"+++%f",currentInterval);
     self.bufferProgress.progress = currentInterval/_totalInterVals;
 }
 

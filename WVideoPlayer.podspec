@@ -23,7 +23,7 @@ TODO: Add long description of the pod here.
 
   s.homepage         = 'https://github.com/zzttwzq/WVideoPlayer'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
-  s.license          = { :type => 'M´IT', :file => 'LICENSE' }
+  s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'zzttwzq' => '1076976262@qq.com' }
   s.source           = { :git => 'https://github.com/zzttwzq/WVideoPlayer.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
@@ -31,10 +31,12 @@ TODO: Add long description of the pod here.
   s.ios.deployment_target = '9.0'
 
   s.source_files = 'WVideoPlayer/Classes/**/*'
+
+  s.resources = ["WVideoPlayer/Assets/*.png"]
   
-  s.resource_bundles = {
-    'WVideoPlayer' => ['WVideoPlayer/Assets/*.png']
-  }
+  # s.resource_bundles = {
+  #  'WVideoPlayer' => ['WVideoPlayer/Assets/*.png']
+  # }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
