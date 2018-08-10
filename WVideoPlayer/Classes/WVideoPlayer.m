@@ -226,8 +226,6 @@ static WVideoPlayer *sharedInstance;
     else if (orientation == UIDeviceOrientationLandscapeLeft ||
              orientation == UIDeviceOrientationLandscapeRight) {
 
-        NSLog(@"+++>>>UIDeviceOrientationLandscapeLeft");
-
         //打开系统的状态条
         [[[UIApplication sharedApplication] keyWindow] setWindowLevel:UIWindowLevelStatusBar];
 

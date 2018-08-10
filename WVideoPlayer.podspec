@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'WVideoPlayer'
-  s.version          = '0.1.8'
+  s.version          = '0.2.0'
   s.summary          = 'iOS avplayer 视频框架的一个封装，能够实现在线和本地视频，音频播放，可以修改的播放控制界面。'
 
 # This description is used to generate tags and improve search results.
@@ -18,8 +18,8 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-TODO: Add long description of the pod here.
-                       DESC
+iOS avplayer 视频框架的一个封装，能够实现在线和本地视频，音频播放，可以修改的播放控制界面。   
+DESC
 
   s.homepage         = 'https://github.com/zzttwzq/WVideoPlayer'
   # s.screenshots     = 'www.example.com/screenshots_1', 'www.example.com/screenshots_2'
