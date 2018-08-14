@@ -27,6 +27,7 @@
 @interface WVideoPlayer : UIView<WPlayControlDelegate,WPlayManagerDelegate>
 @property (nonatomic,assign) float cornerRadius;
 @property (nonatomic,assign) BOOL showBackBtn;
+@property (nonatomic,assign) BOOL showFullScreenBtn;
 @property (nonatomic,copy) NSString *title;
 @property (nonatomic,weak) id<WPlayerProtocol> delegate;
 /**
@@ -50,6 +51,14 @@
  @param urlString url地址
  */
 -(void)playWithUrlString:(NSString *)urlString;
+
+
+/**
+ 播放url地址
+
+ @param url url地址
+ */
+-(void)playWithUrl:(NSURL *)url;
 
 
 /**

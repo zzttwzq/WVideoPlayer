@@ -277,6 +277,18 @@ static WVideoPlayer *sharedInstance;
 }
 
 
+
+/**
+ 播放url地址
+
+ @param urlString url地址
+ */
+-(void)playWithUrl:(NSURL *)url;
+{
+    self.videoManager.item = [[WVideoPlayItem alloc] initWithURL:url];
+}
+
+
 #pragma mark - 处理播放事件
 /**
  停止播放
@@ -325,6 +337,12 @@ static WVideoPlayer *sharedInstance;
 {
     _showBackBtn = showBackBtn;
     self.controlView.showBackBtn = showBackBtn;
+}
+
+- (void) setShowFullScreenBtn:(BOOL)showFullScreenBtn
+{
+    _showFullScreenBtn = showFullScreenBtn;
+    self.controlView.showFullScreenBtn = showFullScreenBtn;
 }
 
 - (void) setFrame:(CGRect)frame

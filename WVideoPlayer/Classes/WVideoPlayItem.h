@@ -58,6 +58,16 @@ typedef void (^floatCallBack)(float update);
 -(instancetype)initWithURLString:(NSString *)URLString;
 
 
+
+/**
+ 初始化item
+
+ @param url url
+ @return 返回初始化的item
+ */
+-(instancetype)initWithURL:(NSURL *)url;
+
+
 /**
  初始化item
 

@@ -38,6 +38,7 @@ typedef NS_ENUM(NSInteger,WPlayViewState) {
 @property (nonatomic,assign) WPlayViewState viewState;
 @property (nonatomic,strong) UILabel *title;
 @property (nonatomic,assign) BOOL showBackBtn;
+@property (nonatomic,assign) BOOL showFullScreenBtn;
 @property (nonatomic,weak) id <WPlayControlDelegate> delegate;
 
 #pragma mark - 设置播放器时间，进度等

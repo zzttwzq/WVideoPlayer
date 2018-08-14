@@ -606,6 +606,16 @@
     }
 }
 
+- (void) setShowFullScreenBtn:(BOOL)showFullScreenBtn
+{
+    _showFullScreenBtn = showFullScreenBtn;
+    if (!showFullScreenBtn) {
+
+        [_fullScreen removeFromSuperview];
+        [self reSetFrames];
+    }
+}
+
 
 - (void)dealloc
 {

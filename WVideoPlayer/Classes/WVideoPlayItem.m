@@ -68,6 +68,23 @@
 /**
  初始化item
 
+ @param url url
+ @return 返回初始化的item
+ */
+-(instancetype)initWithURL:(NSURL *)url;
+{
+    self = [super init];
+    if(self){
+
+        [self addItemWihtURL:url];
+    }
+    return self;
+}
+
+
+/**
+ 初始化item
+
  @param fileName 文件的名字
  @return 返回实例化的item
  */
