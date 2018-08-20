@@ -1,5 +1,5 @@
 PODS:
-  - WVideoPlayer (0.1.6)
+  - WVideoPlayer (0.2.1)
 
 DEPENDENCIES:
   - WVideoPlayer (from `../`)
@@ -9,7 +9,7 @@ EXTERNAL SOURCES:
     :path: "../"
 
 SPEC CHECKSUMS:
-  WVideoPlayer: 1d88bb01b898f9a9a5633c6d3f021d35c93488dc
+  WVideoPlayer: 364bcb3144c2eee565eeb5ea9947bca01217d761
 
 PODFILE CHECKSUM: 214d04e7e135bc5ece1aeb0e4ec94749950ced55
 
