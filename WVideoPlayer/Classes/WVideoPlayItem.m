@@ -99,7 +99,7 @@
             type = fileInfoArray[1];
         }
 
-        NSURL *url =  [NSURL URLWithString:[[NSBundle mainBundle] pathForResource:fileInfoArray[0] ofType:type]];
+        NSURL *url =  [NSURL fileURLWithPath:[[NSBundle mainBundle] pathForResource:fileInfoArray[0] ofType:type]];
         [self addItemWihtURL:url];
     }
     return self;

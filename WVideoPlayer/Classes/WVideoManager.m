@@ -110,7 +110,9 @@
     else if (self.playState == WPlayState_Finished ||
              self.playState == WPlayState_PrepareToPlay) {
         //暂停
-        [self.player pause];
+        if (!_autoReplay) {
+            [self.player pause];
+        }
 
         //重置时间
         [self.player seekToTime:kCMTimeZero];
@@ -127,7 +129,6 @@
         _item = nil;
     }
 }
-
 
 
 /**

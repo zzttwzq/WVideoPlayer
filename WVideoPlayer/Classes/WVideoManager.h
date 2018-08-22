@@ -34,6 +34,10 @@ typedef NS_ENUM(NSInteger,WPlayState) {
 
 @interface WVideoManager : NSObject
 @property (nonatomic,weak) id<WPlayManagerDelegate> delegate;
+/**
+ 自动重新播放
+ */
+@property (nonatomic,assign) BOOL autoReplay;
 
 /**
  播放图层

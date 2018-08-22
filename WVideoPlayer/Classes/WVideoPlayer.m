@@ -24,6 +24,9 @@
 @property (nonatomic,assign) CGRect originRect;
 @property (nonatomic,assign) BOOL keepOriginRect;
 
+@property (nonatomic,copy) NSString *fileName;
+@property (nonatomic,copy) NSString *urlString;
+@property (nonatomic,strong) NSURL *urlPath;
 @end
 
 
@@ -87,7 +90,6 @@ static WVideoPlayer *sharedInstance;
 {
     self.backgroundColor = [UIColor blackColor];
     self.layer.masksToBounds = YES;
-
 
     //-------------------------------监听屏幕方向-------------------------------
     [[NSNotificationCenter defaultCenter] addObserver:self
@@ -170,6 +172,24 @@ static WVideoPlayer *sharedInstance;
     //传递播放状态的改变
     if ([self.delegate respondsToSelector:@selector(playerPlayStateChange:player:)]){
         [self.delegate playerPlayStateChange:playState player:self];
+    }
+
+    //处理自动重新播放
+    if (self.autoReplay) {
+
+        if (playState == WPlayState_Finished) {
+
+            [self play];
+//            if (_fileName) {
+//                [self playWithFile:_fileName];
+//            }
+//            else if (_urlPath) {
+//                [self playWithUrl:_urlPath];
+//            }
+//            else if (_urlString) {
+//                [self playWithUrlString:_urlString];
+//            }
+        }
     }
 }
 
@@ -262,6 +282,7 @@ static WVideoPlayer *sharedInstance;
  */
 -(void)playWithUrlString:(NSString *)urlString;
 {
+    _urlString = urlString;
     self.videoManager.item = [[WVideoPlayItem alloc] initWithURLString:urlString];
 }
 
@@ -273,6 +294,7 @@ static WVideoPlayer *sharedInstance;
  */
 -(void)playWithFile:(NSString *)fileName;
 {
+    _fileName = fileName;
     self.videoManager.item = [[WVideoPlayItem alloc] initWithfileName:fileName];
 }
 
@@ -281,10 +303,11 @@ static WVideoPlayer *sharedInstance;
 /**
  播放url地址
 
- @param urlString url地址
+ @param url url地址
  */
 -(void)playWithUrl:(NSURL *)url;
 {
+    _urlPath = url;
     self.videoManager.item = [[WVideoPlayItem alloc] initWithURL:url];
 }
 
@@ -363,6 +386,27 @@ static WVideoPlayer *sharedInstance;
 {
     _showInView = showInView;
     [_showInView addSubview:self];
+}
+
+- (void) setShowControlView:(BOOL)showControlView
+{
+    _showControlView = showControlView;
+    if (!showControlView) {
+        
+        [_controlView removeFromSuperview];
+    }
+}
+
+- (void) setVideoGravity:(AVLayerVideoGravity)videoGravity
+{
+    _videoGravity = videoGravity;
+    self.videoManager.layer.videoGravity = _videoGravity;
+}
+
+- (void) setAutoReplay:(BOOL)autoReplay
+{
+    _autoReplay = autoReplay;
+    self.videoManager.autoReplay = self.autoReplay;
 }
 
 //- (void) addSubview:(UIView *)view

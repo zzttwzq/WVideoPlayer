@@ -25,15 +25,50 @@
 
 
 @interface WVideoPlayer : UIView<WPlayControlDelegate,WPlayManagerDelegate>
-@property (nonatomic,assign) float cornerRadius;
-@property (nonatomic,assign) BOOL showBackBtn;
-@property (nonatomic,assign) BOOL showFullScreenBtn;
-@property (nonatomic,copy) NSString *title;
+/**
+ 代理
+ */
 @property (nonatomic,weak) id<WPlayerProtocol> delegate;
+
 /**
  要显示的view (nil 则是显示在window上)
  */
 @property (nonatomic,strong) UIView *showInView;
+
+/**
+ 视频拉伸模式
+ */
+@property (nonatomic,assign) AVLayerVideoGravity videoGravity;
+
+/**
+ 自动重新播放
+ */
+@property (nonatomic,assign) BOOL autoReplay;
+
+/**
+ 视频圆角(全屏下不显示)
+ */
+@property (nonatomic,assign) float cornerRadius;
+
+/**
+ 显示控制图层
+ */
+@property (nonatomic,assign) BOOL showControlView;
+
+/**
+ 显示返回按钮
+ */
+@property (nonatomic,assign) BOOL showBackBtn;
+
+/**
+ 显示全屏按钮
+ */
+@property (nonatomic,assign) BOOL showFullScreenBtn;
+
+/**
+ 播放视频的标题
+ */
+@property (nonatomic,copy) NSString *title;
 
 
 /**
