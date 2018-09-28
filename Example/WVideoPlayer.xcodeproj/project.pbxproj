@@ -336,10 +336,12 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-WVideoPlayer_Example/Pods-WVideoPlayer_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/WBasicLibrary/WBasicLibrary.framework",
 				"${BUILT_PRODUCTS_DIR}/WVideoPlayer/WVideoPlayer.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WBasicLibrary.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WVideoPlayer.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;

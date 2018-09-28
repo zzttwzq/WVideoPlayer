@@ -40,5 +40,5 @@ DESC
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'WExpandLibrary'
+  s.dependency 'WBasicLibrary'
 end

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "WVideoManager.h"
-#import "UIView+WZQView.h"
+#import <WBasicLibrary/WBasicHeader.h>
 
 #define AVPLAYER_BAR_HEIGHT 50
 
